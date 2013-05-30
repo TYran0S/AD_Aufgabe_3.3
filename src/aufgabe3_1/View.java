@@ -14,13 +14,13 @@ import java.util.List;
 public interface View {
 	
 	/**
-	 * Wenn ein neu Gefundener Pfad Auftritt wird er über diese Schnittstelle
-	 * in Form einer Knotenliste übertragen.
+	 * Wenn ein neu Gefundener Pfad Auftritt wird er ï¿½ber diese Schnittstelle
+	 * in Form einer Knotenliste ï¿½bertragen.
 	 * Realisierungsidee Anmerkung:
-	 * Die Connection zum nächsten (falls benötigt) Knoten kann z.B 
- 	 * über die gemeinsame Verbindung beider Knoten abgefragt werden.  
+	 * Die Connection zum nï¿½chsten (falls benï¿½tigt) Knoten kann z.B 
+ 	 * ï¿½ber die gemeinsame Verbindung beider Knoten abgefragt werden.  
 	 * @param path
-	 * @return übertragung erfolgreich
+	 * @return ï¿½bertragung erfolgreich
 	 */
-	public boolean newPath(List<Integer> path, final int laenge, List<Integer> visited);
+	public boolean newPath(List<Integer> path, final int laenge, List<Integer> visited, int color);
 }
