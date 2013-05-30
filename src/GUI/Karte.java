@@ -1,6 +1,7 @@
 package GUI;
 
 import java.awt.image.IndexColorModel;
+import java.util.ArrayList;
 import java.util.List;
 import aufgabe3_1.*;
 import javafx.application.Application;
@@ -26,12 +27,19 @@ public class Karte extends Application implements View {
     BorderPane startscr;
     GridPane button_pane;
     Pane karten_pane;
-    ScrollPane scrpane;
+    Pane benutzer_pane;
+//    ScrollPane scrpane;
     TextArea ausgabe_area;
     TextField eingabe_text_feld;
     TextField ausgabe_text_feld;
     Scene scene;
     Stage primaryStage;
+    List <Integer> xCord;
+    List <Integer> yCord;
+    Label[] city = new Label[10];
+    
+    
+    
     final public static int BEST6 = 1365;
     //  final public static int BEST10 = 2255;
     final public static int BEST10 = 15;
@@ -54,10 +62,11 @@ public class Karte extends Application implements View {
         root = new BorderPane();
         button_pane = new GridPane();
         karten_pane = new Pane();
-        scrpane = new ScrollPane();
+        benutzer_pane = new Pane();
+//        scrpane = new ScrollPane();
         root.setCenter(button_pane);
         //root.setCenter(scrpane);
-        scrpane.setContent(karten_pane);
+//        scrpane.setContent(karten_pane);
         //Buttons erstellen
         makeChoiceButtons();
 
@@ -76,7 +85,7 @@ public class Karte extends Application implements View {
 
     //Buttons und Text fï¿½r die Bedienung
     private void makeButtons() {
-        root.setCenter(scrpane);
+        root.setCenter(karten_pane);
         button_pane = new GridPane();
         primaryStage.setResizable(true);
         root.setTop(button_pane);
@@ -104,6 +113,21 @@ public class Karte extends Application implements View {
                 ;
             }
         });
+        int count = 0;
+        
+        Button benutzer_Stadt = new Button("Benutzer definierter Straßenplan");
+        benutzer_Stadt.setOnAction(new EventHandler<ActionEvent>() {
+        	@Override
+        	public void handle(ActionEvent event)
+        	{
+        		root.setCenter(benutzer_pane);	
+        		getCoordinatesPerClick();
+
+        	}
+
+
+		});
+        
         ausgabe_area = new TextArea("Beste Route");
         ausgabe_area.setEditable(false);
         ausgabe_area.setPrefRowCount(4);
@@ -136,8 +160,41 @@ public class Karte extends Application implements View {
         button_pane.add(default_button, 1, 2);
         button_pane.add(start_button, 2, 2);
         button_pane.add(eingabe_text_feld, 3, 2);
+        button_pane.add(benutzer_Stadt, 4, 2);
     }
-
+	
+    
+    private void getCoordinatesPerClick() {
+	
+    	xCord = new ArrayList<Integer>();
+    	yCord = new ArrayList<Integer>();
+    	System.out.println("click");
+    	
+    		benutzer_pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+            	
+            	System.out.println(event.getButton().toString());
+            	
+            	event.getButton().toString();
+                System.out.println("click");
+            	xCord.add((int)event.getX());
+                
+                yCord.add((int)event.getY());
+                city[yCord.indexOf(yCord.get(yCord.size()-1))] = new Label("" + (yCord.indexOf(yCord.get(yCord.size()-1) + 1) ), new ImageView(
+                        city_image));
+                city[yCord.indexOf(yCord.get(yCord.size()-1))].setLayoutX(xCord.get(xCord.size()-1));
+                city[yCord.indexOf(yCord.get(yCord.size()-1))].setLayoutY(yCord.get(yCord.size()-1));
+                benutzer_pane.getChildren().add(city[yCord.indexOf(yCord.get(yCord.size()-1))]);
+                
+                ausgabe_area.setText("Position X = " + xCord.get(xCord.size()-1) + "Position Y = " + yCord.get(yCord.size()-1) + "\n");
+                
+                
+            }
+        });
+        
+        
+		
+	}
 
     //Buttons fï¿½r die Auswahl der Anzahl
     private void makeChoiceButtons(){
