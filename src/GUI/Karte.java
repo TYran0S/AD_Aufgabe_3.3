@@ -72,9 +72,6 @@ public class Karte extends Application implements View {
 		//Buttons und Text für die Bedienung
 		private void makeButtons() {
 			
-		Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
 					button_pane = new GridPane();
 					root.setTop(button_pane);
 					Button default_button = new Button(DEFAULT_CYCLES + " Cycles!");
@@ -129,11 +126,8 @@ public class Karte extends Application implements View {
 					button_pane.add(default_button, 1, 2);
 					button_pane.add(start_button, 2, 2);
 					button_pane.add(eingabe_text_feld, 3, 2);
-
-				}
-			}
-		);		
 	}
+
 	
 	//Buttons für die Auswahl der Anzahl
 	private void makeChoiceButtons(){
@@ -193,10 +187,8 @@ public class Karte extends Application implements View {
 	//Controller ruft diese Methode auf um die neue beste Route zu makieren
 	@Override
 	public boolean newPath(final List<Integer> path, final int laenge, final List<Integer> visited) {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				// Restaurieren (alle Straßen schwarz)
+
+		        // Restaurieren (alle Straßen schwarz)
 				for (int j = 0; j < pathlist.length; j++) {
 					pathlist[j].setStroke(Color.BLACK);
 				}
@@ -223,14 +215,6 @@ public class Karte extends Application implements View {
 				
 				ausgabe_text_feld.setText(ausgabe);
 				
-			}
-		});
-		return false;
-	}
-
-	@Override
-	public boolean positionsOfAnts(List<Ant> antList) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -258,9 +242,7 @@ public class Karte extends Application implements View {
 	
 	//Methode um 6 Städte zu zeichen
 	public void draw6() {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
+
 
 				// City-Symbole auf der Karte anzeigen
 				Label[] city_label = new Label[cities.size()];
@@ -268,15 +250,10 @@ public class Karte extends Application implements View {
 				int[] y_koordinaten = { 100, 100, 290, 270, 100, 295 };
 
 				drawLines(city_label, x_koordinaten, y_koordinaten);
-			}
-		});
 	}
 	
 	//Methode um 10 Städte zu zeichen
 		public void draw10() {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
 
 					// City-Symbole auf der Karte anzeigen
 					Label[] city_label = new Label[cities.size()];
@@ -284,17 +261,10 @@ public class Karte extends Application implements View {
 					int[] y_koordinaten = { 103, 103, 384, 103, 382, 305, 100, 500, 92, 492};
 
 					drawLines(city_label, x_koordinaten, y_koordinaten);
-				}
-			});
 		}
-	
-
 	//Methode um 20 Städte zu zeichen
 	public void draw20() {
 
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
 
 				// City-Symbole auf der Karte anzeigen
 				Label[] city_label = new Label[cities.size()];
@@ -304,15 +274,9 @@ public class Karte extends Application implements View {
 						150, 236, 429, 553, 408, 274, 63, 145, 47, 74};
 
 				drawLines(city_label, x_koordinaten, y_koordinaten);
-			}
-		});
 	}
 	
 	public void drawpenta() {
-
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
 
 				// City-Symbole auf der Karte anzeigen
 				Label[] city_label = new Label[cities.size()];
@@ -320,10 +284,7 @@ public class Karte extends Application implements View {
 				int[] y_koordinaten = { 30, 82, 185, 170, 320, 380, 320, 380, 185, 170};
 
 				drawLines(city_label, x_koordinaten, y_koordinaten);
-			}
-		});
 	}
-	
 	//Methode zum Platzieren der Häuser und der Straßen
 	private void drawLines(Label[] city_label, int[] x_koordinaten,
 			int[] y_koordinaten) {
@@ -356,8 +317,6 @@ public class Karte extends Application implements View {
 			pathlist[j].setStroke(Color.BLACK);
 
 			karten_pane.getChildren().add(pathlist[j]);
-
 		}
 	}
-
 }
