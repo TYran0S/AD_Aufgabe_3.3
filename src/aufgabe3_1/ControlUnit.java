@@ -18,7 +18,7 @@ public class ControlUnit implements Controller {
     
     
 	public ControlUnit(View gui, int anzahlCities, String file){
-		//�bergabe der GUI!
+		//�bergabe der GUI!
 		VIEW = gui;
 		SimAnt=new Simulation(anzahlCities, file);
 	}
@@ -32,7 +32,13 @@ public class ControlUnit implements Controller {
 	public int doSteps(int steps) {
 		SimAnt=SimAnt.doSteps(steps);
 		if(!SimAnt.BESTROUTE.isEmpty()){
-			VIEW.newPath(SimAnt.BESTROUTE.get(0), new ACOImpl().length(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS), new ACOImpl().visitedStreets(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS));
+			
+			/*
+			 * Die Eins muss dann hochgezählt werden für verschiedene Colors
+			 * 
+			 * */
+			
+			VIEW.newPath(SimAnt.BESTROUTE.get(0), new ACOImpl().length(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS), new ACOImpl().visitedStreets(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS ),1);
 		}
 		return this.SimAnt.STEPS;
 	}
@@ -48,12 +54,18 @@ public class ControlUnit implements Controller {
 			do{
 				prePathSim=nextPathSim;
 				nextPathSim=nextPathSim.doSteps(1);
-			}while(prePathSim.BESTROUTE.containsAll(nextPathSim.BESTROUTE));	//m�gliche probleme wegen objektkopien und vergleichen		
+			}while(prePathSim.BESTROUTE.containsAll(nextPathSim.BESTROUTE));	//m�gliche probleme wegen objektkopien und vergleichen		
 			//manueller garbage collector start optional
 		}
 		this.SimAnt=nextPathSim;
 		if(!SimAnt.BESTROUTE.isEmpty()){
-			this.VIEW.newPath(this.SimAnt.BESTROUTE.get(0), new ACOImpl().length(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS),new ACOImpl().visitedStreets(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS));
+			/*
+			 * Die Eins muss dann hochgezählt werden für verschiedene Colors
+			 * 
+			 * */
+			
+			
+			this.VIEW.newPath(this.SimAnt.BESTROUTE.get(0), new ACOImpl().length(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS),new ACOImpl().visitedStreets(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS), 1);
 		}
 		return this.SimAnt.STEPS;
 	}

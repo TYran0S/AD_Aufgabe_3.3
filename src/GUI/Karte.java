@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.image.IndexColorModel;
 import java.util.List;
 import aufgabe3_1.*;
 import javafx.application.Application;
@@ -11,6 +12,7 @@ import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.*;
 import javafx.stage.Stage;
 
@@ -35,7 +37,7 @@ public class Karte extends Application implements View {
     final public static int BEST10 = 15;
     final public static int BEST20 = 4205;
 
-    int DEFAULT_CYCLES = 1000;
+    final int DEFAULT_CYCLES = 1000;
 
     Image city_image = new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"));
 
@@ -72,7 +74,7 @@ public class Karte extends Application implements View {
         primaryStage.show();
     }
 
-    //Buttons und Text f�r die Bedienung
+    //Buttons und Text fï¿½r die Bedienung
     private void makeButtons() {
         root.setCenter(scrpane);
         button_pane = new GridPane();
@@ -137,7 +139,7 @@ public class Karte extends Application implements View {
     }
 
 
-    //Buttons f�r die Auswahl der Anzahl
+    //Buttons fï¿½r die Auswahl der Anzahl
     private void makeChoiceButtons(){
         Button button_6 = new Button("6 Staedte");
         //button_pane = new GridPane();
@@ -187,7 +189,7 @@ public class Karte extends Application implements View {
 
     }
 
-    //Controller erst starten wenn Anzahl der St�dte ausgew�hlt wurde.
+    //Controller erst starten wenn Anzahl der Stï¿½dte ausgewï¿½hlt wurde.
     private void letsGO(int anzahl, String datei){
         this.con = new ControlUnit(this, anzahl, datei);
         cities = con.giveNodelist(true);
@@ -199,15 +201,15 @@ public class Karte extends Application implements View {
 
     //Controller ruft diese Methode auf um die neue beste Route zu makieren
     @Override
-    public boolean newPath(final List<Integer> path, final int laenge, final List<Integer> visited) {
+    public boolean newPath(final List<Integer> path, final int laenge, final List<Integer> visited, final int color) {
 
-        // Restaurieren (alle Stra�en schwarz)
+        // Restaurieren (alle Straï¿½en schwarz)
         for (int j = 0; j < pathlist.length; j++) {
             pathlist[j].setStroke(Color.BLACK);
         }
-        // Nur bestimmte Stra�en rot
+        // Nur bestimmte Straï¿½en rot
         for (int i = 0; i < visited.size(); i++) {
-            pathlist[visited.get(i)-1].setStroke(Color.RED);
+            pathlist[visited.get(i)-1].setStroke(getColor(3));
         }
 
         //Ausgabe des Path als String
@@ -231,7 +233,24 @@ public class Karte extends Application implements View {
         return false;
     }
 
-    // BOOLEAN AUSGABE NOCH ANPASSEN!!
+    private Paint getColor(int color) {
+    	switch(color)
+		{
+			case 1: return Color.DARKGOLDENROD;
+			case 2: return Color.AQUA;
+			case 3: return Color.BISQUE;
+			case 4: return Color.CHOCOLATE;
+			case 5: return Color.CYAN;
+			case 6: return Color.GREEN;
+			case 7: return Color.YELLOW;
+			case 8: return Color.RED;
+			case 9: return Color.ROSYBROWN;
+			case 10: return Color.HOTPINK;
+		}
+		return Color.TOMATO;
+	}
+
+	// BOOLEAN AUSGABE NOCH ANPASSEN!!
     public boolean drawCities() {
         boolean ausgabe = false;
 
@@ -252,7 +271,7 @@ public class Karte extends Application implements View {
         return ausgabe;
     }
 
-    //Methode um 6 St�dte zu zeichen
+    //Methode um 6 Stï¿½dte zu zeichen
     public void draw6() {
 
 
@@ -264,7 +283,7 @@ public class Karte extends Application implements View {
         drawLines(city_label, x_koordinaten, y_koordinaten);
     }
 
-    //Methode um 10 St�dte zu zeichen
+    //Methode um 10 Stï¿½dte zu zeichen
     public void draw10() {
 
         // City-Symbole auf der Karte anzeigen
@@ -274,7 +293,7 @@ public class Karte extends Application implements View {
 
         drawLines(city_label, x_koordinaten, y_koordinaten);
     }
-    //Methode um 20 St�dte zu zeichen
+    //Methode um 20 Stï¿½dte zu zeichen
     public void draw20() {
 
 
@@ -297,7 +316,7 @@ public class Karte extends Application implements View {
 
         drawLines(city_label, x_koordinaten, y_koordinaten);
     }
-    //Methode zum Platzieren der H�user und der Stra�en
+    //Methode zum Platzieren der Hï¿½user und der Straï¿½en
     private void drawLines(Label[] city_label, int[] x_koordinaten,
             int[] y_koordinaten) {
         for (int i = 0; i < city_label.length; i++) {
@@ -312,7 +331,7 @@ public class Karte extends Application implements View {
             pathlist[j] = new Path();
             MoveTo moveTo = new MoveTo();
             // Gehe alle Connections durch und hole dir vo der
-            // jeweiligen Connection die St�dte
+            // jeweiligen Connection die Stï¿½dte
             // Dann holt er sich fuer MoveTo von der Stadt 0 die X und Y
             // koordinte und dann von Stadt 1 fuer LineTo
             moveTo.setX(x_koordinaten[connections.get(j).cities.get(0) - 1]);
