@@ -57,14 +57,14 @@ public class Karte extends Application implements View {
 		makeChoiceButtons();
 		
 
-		scene = new Scene(root, 1300, 724);
+		scene = new Scene(root, 1024, 600);
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
 		
 		//Hintergrundbild
-		scene.getStylesheets()
-				.add(Karte.class.getResource("/resource/Login.css")
-						.toExternalForm());
+		//scene.getStylesheets()
+				//.add(Karte.class.getResource("/resource/Login.css")
+						//.toExternalForm());
 
 		primaryStage.show();
 	}
