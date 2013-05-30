@@ -29,6 +29,7 @@ public class Karte extends Application implements View {
     TextField eingabe_text_feld;
     TextField ausgabe_text_feld;
     Scene scene;
+    Stage primaryStage;
     final public static int BEST6 = 1365;
     //  final public static int BEST10 = 2255;
     final public static int BEST10 = 15;
@@ -45,7 +46,7 @@ public class Karte extends Application implements View {
     @Override
     public void start(Stage primaryStage) {
         // Controller initializieren
-
+    	this.primaryStage = primaryStage;
         primaryStage.setTitle("Strassenplan");
 
         root = new BorderPane();
@@ -75,6 +76,7 @@ public class Karte extends Application implements View {
     private void makeButtons() {
         root.setCenter(scrpane);
         button_pane = new GridPane();
+        primaryStage.setResizable(true);
         root.setTop(button_pane);
         Button default_button = new Button(DEFAULT_CYCLES + " Cycles!");
         default_button.setPrefSize(150, 20);        
