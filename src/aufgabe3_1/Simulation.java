@@ -40,6 +40,22 @@ public class Simulation {
     final public int STEPS;
 
     public Simulation(int cities, String path) {
+        List<List<Integer>> t = new ArrayList<List<Integer>>();
+        t.add(new ArrayList<Integer>());
+        t.add(new ArrayList<Integer>());
+        t.get(0).add(5);
+        t.get(0).add(2);
+        t.get(0).add(3);
+        t.get(0).add(4);
+        t.get(0).add(6);
+        t.get(1).add(1);
+        t.get(1).add(1);
+        t.get(1).add(1);
+        t.get(1).add(1);
+        t.get(1).add(1);
+
+        ACOImpl.ACOImplInit(t);
+        
         CITIES = cities;
         TESTDATA = path;
         COLONY = new ACOImpl();
@@ -66,6 +82,22 @@ public class Simulation {
     }
 
     private Simulation(int cities, String path, List<Connection> cons, List<Ant> antlist, List<Node> nodes, List<List<Integer>> bestRoute, int steps) {
+        List<List<Integer>> t = new ArrayList<List<Integer>>();
+        t.add(new ArrayList<Integer>());
+        t.add(new ArrayList<Integer>());
+        t.get(0).add(5);
+        t.get(0).add(2);
+        t.get(0).add(3);
+        t.get(0).add(4);
+        t.get(0).add(6);
+        t.get(1).add(1);
+        t.get(1).add(1);
+        t.get(1).add(1);
+        t.get(1).add(1);
+        t.get(1).add(1);
+
+        ACOImpl.ACOImplInit(t);
+        
         CITIES = cities;
         TESTDATA = path;
         COLONY = new ACOImpl();
