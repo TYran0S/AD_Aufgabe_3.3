@@ -41,10 +41,10 @@ public class Karte extends Application implements View {
     Label[] city = new Label[10];
     Label lastlabel = null;
 
-    int x1 = 0 ;
-    int y1 = 0 ;
-    int x2 = 0 ;
-    int y2 = 0 ;
+    int x1 = 0;
+    int y1 = 0;
+    int x2 = 0;
+    int y2 = 0;
     int cityId1, citiId2;
 
 
@@ -128,7 +128,7 @@ public class Karte extends Application implements View {
             @Override
             public void handle(ActionEvent event)
         {
-            root.setCenter(benutzer_pane);	
+            root.setCenter(benutzer_pane);  
             getCoordinatesPerClick();
 
         }
