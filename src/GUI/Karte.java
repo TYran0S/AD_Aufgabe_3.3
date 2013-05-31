@@ -10,6 +10,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -22,13 +23,14 @@ public class Karte extends Application implements View {
     Path[] pathlist;
     List<Node> cities;
     List<Connection> connections;
+    List<Connection> customconnections;
     Controller con;
     BorderPane root;
     BorderPane startscr;
     GridPane button_pane;
     Pane karten_pane;
     Pane benutzer_pane;
-//    ScrollPane scrpane;
+    //    ScrollPane scrpane;
     TextArea ausgabe_area;
     TextField eingabe_text_feld;
     TextField ausgabe_text_feld;
@@ -37,9 +39,15 @@ public class Karte extends Application implements View {
     List <Integer> xCord;
     List <Integer> yCord;
     Label[] city = new Label[10];
-    
-    
-    
+    Label lastlabel = null;
+
+    int x1 = 0 ;
+    int y1 = 0 ;
+    int x2 = 0 ;
+    int y2 = 0 ;
+    int cityId1, citiId2;
+
+
     final public static int BEST6 = 1365;
     //  final public static int BEST10 = 2255;
     final public static int BEST10 = 15;
@@ -56,17 +64,17 @@ public class Karte extends Application implements View {
     @Override
     public void start(Stage primaryStage) {
         // Controller initializieren
-    	this.primaryStage = primaryStage;
+        this.primaryStage = primaryStage;
         primaryStage.setTitle("Strassenplan");
 
         root = new BorderPane();
         button_pane = new GridPane();
         karten_pane = new Pane();
         benutzer_pane = new Pane();
-//        scrpane = new ScrollPane();
+        //        scrpane = new ScrollPane();
         root.setCenter(button_pane);
         //root.setCenter(scrpane);
-//        scrpane.setContent(karten_pane);
+        //        scrpane.setContent(karten_pane);
         //Buttons erstellen
         makeChoiceButtons();
 
@@ -114,20 +122,20 @@ public class Karte extends Application implements View {
             }
         });
         int count = 0;
-        
+
         Button benutzer_Stadt = new Button("Benutzer definierter Straßenplan");
         benutzer_Stadt.setOnAction(new EventHandler<ActionEvent>() {
-        	@Override
-        	public void handle(ActionEvent event)
-        	{
-        		root.setCenter(benutzer_pane);	
-        		getCoordinatesPerClick();
+            @Override
+            public void handle(ActionEvent event)
+        {
+            root.setCenter(benutzer_pane);	
+            getCoordinatesPerClick();
 
-        	}
+        }
 
 
-		});
-        
+        });
+
         ausgabe_area = new TextArea("Beste Route");
         ausgabe_area.setEditable(false);
         ausgabe_area.setPrefRowCount(4);
@@ -162,39 +170,89 @@ public class Karte extends Application implements View {
         button_pane.add(eingabe_text_feld, 3, 2);
         button_pane.add(benutzer_Stadt, 4, 2);
     }
-	
-    
+
+
     private void getCoordinatesPerClick() {
-	
-    	xCord = new ArrayList<Integer>();
-    	yCord = new ArrayList<Integer>();
-    	System.out.println("click");
-    	
-    		benutzer_pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+        if (xCord == null) {
+            xCord = new ArrayList<Integer>();
+            yCord = new ArrayList<Integer>();
+        }
+        benutzer_pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
-            	
-            	System.out.println(event.getButton().toString());
-            	
-            	event.getButton().toString();
-                System.out.println("click");
-            	xCord.add((int)event.getX());
-                
-                yCord.add((int)event.getY());
-                city[yCord.indexOf(yCord.get(yCord.size()-1))] = new Label("" + (yCord.indexOf(yCord.get(yCord.size()-1) + 1) ), new ImageView(
-                        city_image));
-                city[yCord.indexOf(yCord.get(yCord.size()-1))].setLayoutX(xCord.get(xCord.size()-1));
-                city[yCord.indexOf(yCord.get(yCord.size()-1))].setLayoutY(yCord.get(yCord.size()-1));
-                benutzer_pane.getChildren().add(city[yCord.indexOf(yCord.get(yCord.size()-1))]);
-                
-                ausgabe_area.setText("Position X = " + xCord.get(xCord.size()-1) + "Position Y = " + yCord.get(yCord.size()-1) + "\n");
-                
-                
+                if (event.getButton() == MouseButton.PRIMARY){
+                    int x,y;
+                    //System.out.println(event.getButton().toString());
+                    event.getButton().toString();
+                    x = (int) event.getX();
+                    y = (int) event.getY();
+                    if (xCord.contains(x) && yCord.contains(y)) {
+                        System.out.println("Stadt existiert bereits");
+                    }
+                    xCord.add(x);
+                    yCord.add(y);
+                    //System.out.println("click");
+                    //int index = yCord.indexOf(yCord.get(yCord.size()-1));
+                    int index = yCord.indexOf(y);
+                    int length = index + 1; 
+                    if (length >= 10) {
+                        System.out.println("max 10 cities");
+                        return;
+                    }
+                    city[index] = new Label("" + (index), new ImageView( city_image));
+                    city[index].setLayoutX(x);
+                    city[index].setLayoutY(y);
+                    //city[yCord.indexOf(yCord.get(yCord.size()-1))].setText(String.valueOf(yCord.indexOf(yCord.size()-1)));
+                    city[index].setText(String.valueOf(index));
+                    city[index].setOnMouseClicked(new EventHandler<MouseEvent>(){
+                        public void handle(MouseEvent event){
+                            if (event.getButton() == MouseButton.SECONDARY){
+                                Label label;
+                                label=  ((Label)event.getSource());
+                                if ( x1 != 0 && y1 != 0){
+                                    y2 = y1;
+                                    x2 = x1;
+                                }
+                                x1 = (int)label.getLayoutX();
+                                y1 = (int)label.getLayoutY();
+                                //if ()
+                                //LineTo lineto = new LineTo(
+                                Path path = new Path();
+                                MoveTo moveTo = new MoveTo();
+                                // Gehe alle Connections durch und hole dir vo der
+                                // jeweiligen Connection die Stï¿½dte
+                                // Dann holt er sich fuer MoveTo von der Stadt 0 die X und Y
+                                // koordinte und dann von Stadt 1 fuer LineTo
+                                if ( x2 != 0) {
+
+                                    //customconnections.add(new Connection(
+                                    moveTo.setX(x1);
+                                    moveTo.setY(y1);
+
+                                    LineTo lineTo = new LineTo();
+                                    lineTo.setX(x2);
+                                    lineTo.setY(y2);
+                                    path.getElements().add(moveTo);
+                                    path.getElements().add(lineTo);
+
+                                    path.setStrokeWidth(2);
+                                    path.setStroke(Color.BLACK);
+                                    benutzer_pane.getChildren().add(path);
+                                    label.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"))));
+                                    if (label != null )
+                                        lastlabel.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
+                                }
+                                lastlabel = label;
+
+                            }
+                        }});
+                    benutzer_pane.getChildren().add(city[index]);
+                    ausgabe_area.setText("Position X = " + x + "Position Y = " + y + "\n");
+
+                }
             }
         });
-        
-        
-		
-	}
+    }
 
     //Buttons fï¿½r die Auswahl der Anzahl
     private void makeChoiceButtons(){
@@ -291,23 +349,23 @@ public class Karte extends Application implements View {
     }
 
     private Paint getColor(int color) {
-    	switch(color)
-		{
-			case 1: return Color.DARKGOLDENROD;
-			case 2: return Color.AQUA;
-			case 3: return Color.BISQUE;
-			case 4: return Color.CHOCOLATE;
-			case 5: return Color.CYAN;
-			case 6: return Color.GREEN;
-			case 7: return Color.YELLOW;
-			case 8: return Color.RED;
-			case 9: return Color.ROSYBROWN;
-			case 10: return Color.HOTPINK;
-		}
-		return Color.TOMATO;
-	}
+        switch(color)
+        {
+            case 1: return Color.DARKGOLDENROD;
+            case 2: return Color.AQUA;
+            case 3: return Color.BISQUE;
+            case 4: return Color.CHOCOLATE;
+            case 5: return Color.CYAN;
+            case 6: return Color.GREEN;
+            case 7: return Color.YELLOW;
+            case 8: return Color.RED;
+            case 9: return Color.ROSYBROWN;
+            case 10: return Color.HOTPINK;
+        }
+        return Color.TOMATO;
+    }
 
-	// BOOLEAN AUSGABE NOCH ANPASSEN!!
+    // BOOLEAN AUSGABE NOCH ANPASSEN!!
     public boolean drawCities() {
         boolean ausgabe = false;
 
@@ -397,7 +455,6 @@ public class Karte extends Application implements View {
             LineTo lineTo = new LineTo();
             lineTo.setX(x_koordinaten[connections.get(j).cities.get(1) - 1]);
             lineTo.setY(y_koordinaten[connections.get(j).cities.get(1) - 1]);
-
             pathlist[j].getElements().add(moveTo);
             pathlist[j].getElements().add(lineTo);
 
