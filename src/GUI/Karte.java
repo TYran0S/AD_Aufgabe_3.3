@@ -23,7 +23,7 @@ public class Karte extends Application implements View {
     Path[] pathlist;
     List<Node> cities;
     List<Connection> connections;
-    List<Connection> customconnections;
+    List<Connection> customconnections = new ArrayList<Connection>();
     Controller con;
     BorderPane root;
     BorderPane startscr;
@@ -38,8 +38,14 @@ public class Karte extends Application implements View {
     Stage primaryStage;
     List <Integer> xCord;
     List <Integer> yCord;
-    Label[] city = new Label[10];
+    List <Integer> cityIds = new ArrayList<Integer>();
+    List <Node> nodes = new ArrayList<Node>();
+    Label[] city = new Label[10];  
+    
+    List<Label> cityLabel = new ArrayList<Label>();  /* labels fuer die selbstgebaute Karte */
+    List <Integer> selectedLabels = new ArrayList<Integer>();  /* labelIds fuer die zu verbinden Labels */
     Label lastlabel = null;
+    boolean free = true ;
 
     int x1 = 0;
     int y1 = 0;
@@ -180,7 +186,9 @@ public class Karte extends Application implements View {
         }
         benutzer_pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
-                if (event.getButton() == MouseButton.PRIMARY){
+                free = true; /*HACK*/
+
+                if ( event.getClickCount() == 2 ){
                     int x,y;
                     //System.out.println(event.getButton().toString());
                     event.getButton().toString();
@@ -188,6 +196,7 @@ public class Karte extends Application implements View {
                     y = (int) event.getY();
                     if (xCord.contains(x) && yCord.contains(y)) {
                         System.out.println("Stadt existiert bereits");
+                        return;
                     }
                     xCord.add(x);
                     yCord.add(y);
@@ -195,58 +204,86 @@ public class Karte extends Application implements View {
                     //int index = yCord.indexOf(yCord.get(yCord.size()-1));
                     int index = yCord.indexOf(y);
                     int length = index + 1; 
-                    if (length >= 10) {
+                    if (length >= 15) {
                         System.out.println("max 10 cities");
                         return;
                     }
-                    city[index] = new Label("" + (index), new ImageView( city_image));
-                    city[index].setLayoutX(x);
-                    city[index].setLayoutY(y);
+                    cityIds.add(index);
+                    Label tmp =  new Label("" + (index), new ImageView( city_image)) ;
+                    tmp.setLayoutX(x);
+                    tmp.setLayoutY(y);
+                    tmp.setId(String.valueOf(index));
+                    cityLabel.add( tmp);
                     //city[yCord.indexOf(yCord.get(yCord.size()-1))].setText(String.valueOf(yCord.indexOf(yCord.size()-1)));
-                    city[index].setText(String.valueOf(index));
-                    city[index].setOnMouseClicked(new EventHandler<MouseEvent>(){
+                    tmp.setText(String.valueOf(index));
+                    tmp.setOnMouseClicked(new EventHandler<MouseEvent>(){
                         public void handle(MouseEvent event){
-                            if (event.getButton() == MouseButton.SECONDARY){
-                                Label label;
-                                label=  ((Label)event.getSource());
-                                if ( x1 != 0 && y1 != 0){
-                                    y2 = y1;
-                                    x2 = x1;
-                                }
-                                x1 = (int)label.getLayoutX();
-                                y1 = (int)label.getLayoutY();
-                                //if ()
-                                //LineTo lineto = new LineTo(
+                            Label label; /* das momentan angeclickte label */ 
+                            label=  ((Label)event.getSource());
+                            if ( event.getClickCount() == 1){
                                 Path path = new Path();
                                 MoveTo moveTo = new MoveTo();
-                                // Gehe alle Connections durch und hole dir vo der
-                                // jeweiligen Connection die Stï¿½dte
-                                // Dann holt er sich fuer MoveTo von der Stadt 0 die X und Y
-                                // koordinte und dann von Stadt 1 fuer LineTo
-                                if ( x2 != 0) {
-
-                                    //customconnections.add(new Connection(
-                                    moveTo.setX(x1);
-                                    moveTo.setY(y1);
-
-                                    LineTo lineTo = new LineTo();
-                                    lineTo.setX(x2);
-                                    lineTo.setY(y2);
-                                    path.getElements().add(moveTo);
-                                    path.getElements().add(lineTo);
-
-                                    path.setStrokeWidth(2);
-                                    path.setStroke(Color.BLACK);
-                                    benutzer_pane.getChildren().add(path);
-                                    label.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"))));
-                                    if (label != null )
-                                        lastlabel.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
+                                /* TODO durch if ersetzen ueberfluessigen kram raus + new connections*/
+                                switch (selectedLabels.size()) {
+                                    case 0: 
+                                        selectedLabels.add(Integer.valueOf(label.getId()));
+                                        label.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"))));
+                                        break;
+                                    case 1:
+                                        /* toggle already selected */
+                                        if ((cityLabel.get(selectedLabels.get(0)) == label )) {
+                                            label.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
+                                            selectedLabels.clear();
+                                        }
+                                        else{
+                                            selectedLabels.add(Integer.valueOf(label.getId()));
+                                            /*draw lines*/
+                                            x1 = (int)label.getLayoutX();
+                                            y1 = (int)label.getLayoutY();
+                                            moveTo.setX(x1);
+                                            moveTo.setY(y1);
+                                            y2 = (int)cityLabel.get(selectedLabels.get(0)).getLayoutY();
+                                            x2 = (int)cityLabel.get(selectedLabels.get(0)).getLayoutX();
+                                            LineTo lineTo = new LineTo();
+                                            lineTo.setX(x2);
+                                            lineTo.setY(y2);
+                                            /* calculate distance */
+                                            int distance = (int)(Math.sqrt( ((x2 -x1)*(x2 - x1 )) + ( (y2 - y1) * (y2 - y1) ) ));
+                                            System.out.println("distance = " + distance );
+                                            path.getElements().add(moveTo);
+                                            path.getElements().add(lineTo);
+                                            path.setStrokeWidth(2);
+                                            path.setStroke(Color.BLACK);
+                                            benutzer_pane.getChildren().add(path);
+                                            List<Integer> tmpCitylist = new ArrayList<Integer>();
+                                            System.out.println(selectedLabels.get(0));
+                                            tmpCitylist.add(selectedLabels.get(0));
+                                            tmpCitylist.add(selectedLabels.get(1));
+                                            Connection connection = new Connection(selectedLabels.get(0), distance, 0, tmpCitylist);
+                                            nodes.get(selectedLabels.get(0)).trails.add(connection);
+                                            customconnections.add(connection);
+                                            System.out.println("labelId: " + label.getId());
+                                            cityLabel.get(selectedLabels.get(0)).setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
+                                            selectedLabels.clear();
+                                            //System.out.println(customconnections.toString());
+                                            System.out.println(nodes.toString());
+                                            System.out.println("--------------------------------------------------nodes--------------------------------------------");
+                                        }
+                                        break;
+                                    default:
+                                        System.out.println("switch fails");
                                 }
-                                lastlabel = label;
 
                             }
+                            lastlabel = label;
+
                         }});
-                    benutzer_pane.getChildren().add(city[index]);
+                    if (free) {
+                        benutzer_pane.getChildren().add(tmp);
+                        ArrayList<Connection> trails = new ArrayList<Connection>();
+                        Node node = new Node(Integer.valueOf(tmp.getId()), trails);
+                        nodes.add(node);
+                    }
                     ausgabe_area.setText("Position X = " + x + "Position Y = " + y + "\n");
 
                 }
