@@ -282,7 +282,7 @@ public class Karte extends Application implements View {
                     if (free) {
                         benutzer_pane.getChildren().add(tmp);
                         ArrayList<Connection> trails = new ArrayList<Connection>();
-                        Node node = new Node(Integer.valueOf(tmp.getId()), trails);
+                        Node node = new Node(Integer.valueOf(tmp.getId()), trails,0);
                         nodes.add(node);
                     }
                     ausgabe_area.setText("Position X = " + x + "Position Y = " + y + "\n");
