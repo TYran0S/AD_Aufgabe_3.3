@@ -7,6 +7,8 @@ public class Parser {
 
     // Startwert der Pheromone pro Connection
     final public static int pheromon = 0;
+    //Liste für die Anzahl der Pakete pro Stadt
+    public static List<Integer> packetList = new ArrayList<Integer>();
 
     /**
      * Liest eine (symmetrische) TSP Datei ein und uebertraegt die linke
@@ -65,13 +67,14 @@ public class Parser {
             if (array[i] == 0) {
             	
                 currentCity++;
-                neighborCity = array[i+1];
+                packetList.add(array[i+1]);
+                neighborCity = array[i+2];
                 List<Integer> cities = new ArrayList<Integer>();
                 cities.add(currentCity);
                 cities.add(neighborCity);
-                connectionList.add(new Connection(connectionID, array[i+2], pheromon, cities));
+                connectionList.add(new Connection(connectionID, array[i+3], pheromon, cities));
                 connectionID++;
-                i = i+2;            
+                i = i+3;            
             } else {
             	 List<Integer> cities = new ArrayList<Integer>();
             	neighborCity = array[i];
@@ -111,11 +114,25 @@ public class Parser {
                     connectionList.add(connections.get(j));
                 } // if
             } // for
-
-            nodeList.add(new Node(i + 1, connectionList));
+            //Der Node die Anzahl der Packets uebergeben(packetList.get(Index connectionSet)
+            if(i != 0) {
+            	nodeList.add(new Node(i + 1, connectionList,packetList.get(i-1)));
+            } else {
+            	nodeList.add(new Node(i + 1, connectionList,0));
+           }
         } // for
-        
+       
         return nodeList;
+    }
+    
+    public static void writeCity(int packetamount,int ... connections) throws IOException{
+    	String input = 0 + ";" + packetamount;
+    	for(int x : connections){
+    		input+= x + ";";
+    	}
+    	 FileWriter fr = new FileWriter("GRSelfMade.csv");
+         BufferedWriter br = new BufferedWriter(fr);
+         br.append(input);
     }
 
 }

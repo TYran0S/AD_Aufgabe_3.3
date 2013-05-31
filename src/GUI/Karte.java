@@ -47,10 +47,10 @@ public class Karte extends Application implements View {
     Label lastlabel = null;
     boolean free = true ;
 
-    int x1 = 0;
-    int y1 = 0;
-    int x2 = 0;
-    int y2 = 0;
+    int x1 = 0 ;
+    int y1 = 0 ;
+    int x2 = 0 ;
+    int y2 = 0 ;
     int cityId1, citiId2;
 
 
@@ -134,7 +134,7 @@ public class Karte extends Application implements View {
             @Override
             public void handle(ActionEvent event)
         {
-            root.setCenter(benutzer_pane);  
+            root.setCenter(benutzer_pane);	
             getCoordinatesPerClick();
 
         }
@@ -281,7 +281,8 @@ public class Karte extends Application implements View {
                     if (free) {
                         benutzer_pane.getChildren().add(tmp);
                         ArrayList<Connection> trails = new ArrayList<Connection>();
-                        Node node = new Node(Integer.valueOf(tmp.getId()), trails);
+                        //todo,paketanzahl in gui eingeben und einlesen
+                        Node node = new Node(Integer.valueOf(tmp.getId()), trails,0);
                         nodes.add(node);
                     }
                     ausgabe_area.setText("Position X = " + x + "Position Y = " + y + "\n");
