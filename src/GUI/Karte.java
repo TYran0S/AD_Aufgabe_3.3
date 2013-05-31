@@ -202,6 +202,7 @@ public class Karte extends Application implements View {
                     city[index] = new Label("" + (index), new ImageView( city_image));
                     city[index].setLayoutX(x);
                     city[index].setLayoutY(y);
+                    city[index].setId(String.valueOf(index));
                     //city[yCord.indexOf(yCord.get(yCord.size()-1))].setText(String.valueOf(yCord.indexOf(yCord.size()-1)));
                     city[index].setText(String.valueOf(index));
                     city[index].setOnMouseClicked(new EventHandler<MouseEvent>(){
@@ -219,10 +220,7 @@ public class Karte extends Application implements View {
                                 //LineTo lineto = new LineTo(
                                 Path path = new Path();
                                 MoveTo moveTo = new MoveTo();
-                                // Gehe alle Connections durch und hole dir vo der
-                                // jeweiligen Connection die Stï¿½dte
-                                // Dann holt er sich fuer MoveTo von der Stadt 0 die X und Y
-                                // koordinte und dann von Stadt 1 fuer LineTo
+                                /* wenn 2 staedte angeclickt wurden */
                                 if ( x2 != 0) {
 
                                     //customconnections.add(new Connection(
@@ -232,6 +230,8 @@ public class Karte extends Application implements View {
                                     LineTo lineTo = new LineTo();
                                     lineTo.setX(x2);
                                     lineTo.setY(y2);
+                                    int distance = (int)(Math.sqrt( ((x2 -x1)*(x2 - x1 )) + ( (y2 - y1) * (y2 - y1) ) ));
+                                    System.out.println("distance = " + distance );
                                     path.getElements().add(moveTo);
                                     path.getElements().add(lineTo);
 
@@ -239,6 +239,7 @@ public class Karte extends Application implements View {
                                     path.setStroke(Color.BLACK);
                                     benutzer_pane.getChildren().add(path);
                                     label.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"))));
+                                    System.out.println("labelId: " + label.getId());
                                     if (label != null )
                                         lastlabel.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
                                 }
