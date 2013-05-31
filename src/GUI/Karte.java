@@ -261,6 +261,7 @@ public class Karte extends Application implements View {
                                             tmpCitylist.add(selectedLabels.get(1));
                                             Connection connection = new Connection(selectedLabels.get(0), distance, 0, tmpCitylist);
                                             nodes.get(selectedLabels.get(0)).trails.add(connection);
+                                            nodes.get(selectedLabels.get(1)).trails.add(connection);
                                             customconnections.add(connection);
                                             System.out.println("labelId: " + label.getId());
                                             cityLabel.get(selectedLabels.get(0)).setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
