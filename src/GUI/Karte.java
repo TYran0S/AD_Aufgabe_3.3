@@ -50,6 +50,21 @@ public class Karte extends Application implements View {
     Image city_image = new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"));
 
     public static void main(String[] args) {
+        List<List<Integer>> t = new ArrayList<List<Integer>>();
+        t.add(new ArrayList<Integer>());
+        t.add(new ArrayList<Integer>());
+        t.get(0).add(5);
+        t.get(0).add(2);
+        t.get(0).add(3);
+        t.get(0).add(4);
+        t.get(0).add(6);
+        t.get(1).add(1);
+        t.get(1).add(1);
+        t.get(1).add(1);
+        t.get(1).add(1);
+        t.get(1).add(1);
+        
+        ACOImpl.ACOImplInit(t);
         launch();
     }
 
