@@ -18,7 +18,7 @@ public class ControlUnit implements Controller {
     
     
 	public ControlUnit(View gui, int anzahlCities, String file){
-		//�bergabe der GUI!
+		//uebergabe der GUI!
 		VIEW = gui;
 		SimAnt=new Simulation(anzahlCities, file);
 	}

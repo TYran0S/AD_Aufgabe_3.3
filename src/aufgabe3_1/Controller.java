@@ -13,25 +13,25 @@ import java.util.List;
  */
 public interface Controller {
 	/**
-	 * Lässt die Simulation um X Schritte vorranschreiten.
+	 * Laesst die Simulation um X Schritte vorranschreiten.
 	 * Da die Simulation open end ist bestimmt man somit die 
 	 * Simulationsdauer bzw. Genauigkeit durch die Anzahl der 
-	 * Systemdurchläufe.
+	 * Systemdurchlaeufe.
 	 * @param steps Anzahl der Schritte um die das Programm vorranschreiten soll
 	 * @return die Bisher gemachten Schritte in der Simulation
 	 */
 	public int doSteps(int steps);
 	
 	/**
-	 * Lässt die Simulation laufen bis der nächste "Xte" Pfad gefunden ist
-	 * @param pathNR der nächste anzuzeigende pfad
+	 * Laesst die Simulation laufen bis der naechste "Xte" Pfad gefunden ist
+	 * @param pathNR der naechste anzuzeigende pfad
 	 * @return die Bisher gemachten Schritte in der Simulation
 	 */
 	public int doStepsTillPath(int pathNR);
 	
 	
 	/**
-	 * Gibt einen der bereits gefundenen Pade zurück	 
+	 * Gibt einen der bereits gefundenen Pade zurueck	 
 	 * Es werden die letzten 10 archiviert. 
 	 * @param pathNR Nummer des Pfades 0 der aktuelle , max 10 der pfad vor 10 optimierungsschritten
 	 * @return zusammensetzung des Pfades , oder Leerer Pfad falls keiner exsistiert oder bis jetzt gefunden 
@@ -39,7 +39,7 @@ public interface Controller {
 	public List<Integer> foundPaths(int pathNR);
 	
 	/**
-	 * Gibt die aktuelle Knotenliste des implementierenden Objektes  des Controllerinterfaces zurück.
+	 * Gibt die aktuelle Knotenliste des implementierenden Objektes  des Controllerinterfaces zurï¿½ck.
 	 * 
 	 * Die Returnliste ist eine Kopie der orginalen Nodelist (+final nodes) 
 	 * um Kapselung und funktionale hier immutable Programmierung zu erhalten

@@ -11,14 +11,11 @@ public interface ACO {
     //erzeugung einer bestimmten anzahl von ameisen an einer bestimmten Node
     public List<Ant> createAnts(int antCount, Node startPosition);
     
-    //ameiise an den alten node zerstören und am ziel node neue ameise mit der selben ID erzeugen
-    public Ant move(Ant ant, Node node);
-    
-    //alle nodes von der übergebene ameise werden zurückgesetz "fange neu an"
+    //alle nodes von der uebergebene ameise werden zurueckgesetz "fange neu an"
     public Ant clear(Ant ant);
 
-    //ist die übergebene ameise alle nodes durch gegangen
-    public boolean tourFinished(Ant ant, int cities);
+    //ist die uebergebene ameise alle nodes durch gegangen
+    public boolean tourFinished(Ant ant, int id);
 
     public Connection updatePheromones(Connection connection, double q);
 
