@@ -223,10 +223,10 @@ public class TestFrame {
                            Node nextNode = testColony.randomPathChoice(antList.get(a),nodes, probabilities,startNode);
 
                            // Ameise zum nextNode bewegen, dabei wird eine neue Ameise mit dem nextNode in ihrer visitedNodes Liste erzeugt
-                           Ant movedAnt = testColony.move(antList.get(a), nextNode);
+                          // Ant movedAnt = testColony.move(antList.get(a), nextNode);
 
                            // Alte Ameise in der Liste durch neue Ameise mit aktualisierter visitedNodes Liste ersetzen
-                           antList.set(a, movedAnt);
+                           //antList.set(a, movedAnt);
 
                            // Benutzte Connection suchen und in tempConnection ablegen
                            Connection tempConnection = null;
@@ -262,7 +262,7 @@ public class TestFrame {
                 		 
                 		 
                 		 
-     					//setze letzte besuchte stadt als start node, für die actuelle amese
+     					//setze letzte besuchte stadt als start node, fï¿½r die actuelle amese
      							//hole von der actuellen ameise die letzte node
      											 //hole die letzte besuchte stadt
                 // Start-Node erzeugen								   wie viele nodes die ant besucht hat
@@ -274,10 +274,10 @@ public class TestFrame {
          		// Nach Zufallsmuster anhand der Probabilities den naechsten Node ermitteln
          		Node nextNode = testColony.randomPathChoice(antList.get(a),nodes, probabilities,startNode);
          		// Ameise zum nextNode bewegen, dabei wird eine neue Ameise mit dem nextNode in ihrer visitedNodes Liste erzeugt
-         		Ant movedAnt = testColony.move(antList.get(a), nextNode);
+         		//Ant movedAnt = testColony.move(antList.get(a), nextNode);
 
          		// Alte Ameise in der Liste durch neue Ameise mit aktualisierter visitedNodes Liste ersetzen
-         		antList.set(a, movedAnt);
+         		//antList.set(a, movedAnt);
 
          		// Benutzte Connection suchen und in tempConnection ablegen
          		Connection tempConnection = null;
