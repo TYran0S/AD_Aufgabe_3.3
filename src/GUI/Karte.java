@@ -146,9 +146,9 @@ public class Karte extends Application implements View {
                 "einfach Klick rechte Maustaste auf Stadt: Paketmenge bestimmen ");
             info.setEditable(false);
             info.setPrefRowCount(4);
-            info.setStyle("-fx-text-fill: green;");
-            info.setStyle("-fx-background-color: black;");
-            info.setStyle( "-fx-text-fill: green;"+ "-fx-background-color: black;");
+            //info.setStyle("-fx-text-fill:white;");
+            //info.setStyle("-fx-background-color: black;");
+            info.setStyle( "-fx-text-fill: white;"+ "-fx-background-color: black;");
             root.setTop(info);
             root.setCenter(benutzer_pane);	
             getCoordinatesPerClick();
@@ -250,7 +250,7 @@ public class Karte extends Application implements View {
                                         /* toggle already selected */
                                         if ((cityLabel.get(selectedLabels.get(0)) == label )) {
                                             label.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
-                                            //selectedLabels.clear();
+                                            selectedLabels.clear();
                                             //selectedLabels.remove(0);
                                         }
                                         else{
@@ -258,15 +258,15 @@ public class Karte extends Application implements View {
                                             /*draw lines*/
                                             x1 = (int)label.getLayoutX();
                                             y1 = (int)label.getLayoutY();
-                                            moveTo.setX(x1);
-                                            moveTo.setY(y1);
                                             y2 = (int)cityLabel.get(selectedLabels.get(0)).getLayoutY();
                                             x2 = (int)cityLabel.get(selectedLabels.get(0)).getLayoutX();
+                                            int distance = (int)(Math.sqrt( ((x2 -x1)*(x2 - x1 )) + ( (y2 - y1) * (y2 - y1) ) ));
+                                            moveTo.setX(x1);
+                                            moveTo.setY(y1);
                                             LineTo lineTo = new LineTo();
                                             lineTo.setX(x2);
                                             lineTo.setY(y2);
                                             /* calculate distance */
-                                            int distance = (int)(Math.sqrt( ((x2 -x1)*(x2 - x1 )) + ( (y2 - y1) * (y2 - y1) ) ));
                                             System.out.println("distance = " + distance );
                                             path.getElements().add(moveTo);
                                             path.getElements().add(lineTo);
@@ -307,7 +307,7 @@ public class Karte extends Application implements View {
                                 testPane.add(eingabe_anzahl, 2, 2);
                                 testPane.add(text_info1, 1, 1);
                                 root.setRight(testPane);
-                                root.setTop(testPane);
+                                //root.setTop(testPane);
                                 pakete.setFocusTraversable(true);
                                 pakete.requestFocus();
                                 eingabe_anzahl.setOnAction(new EventHandler<ActionEvent>() {
@@ -319,7 +319,7 @@ public class Karte extends Application implements View {
                                         } catch (NumberFormatException e) {
                                             pakete.setText("Int-Werte > 0 eingeben");
                                         }
-                                        root.setTop(null);
+                                        root.setRight(null);
                                     }
                                 });
 
