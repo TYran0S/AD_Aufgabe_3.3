@@ -14,6 +14,7 @@ public class Ant {
     public HashMap<Integer,Integer> packagesToDeliver;
     public int deliverdPackagesInARound = 0;
     public int deliverdPackagesTotal = 0;
+    public int loadCount = 0;
     
     @SuppressWarnings("unchecked")
     public Ant(HashMap<Integer,Integer> h, int t) {
@@ -31,8 +32,8 @@ public class Ant {
      * @return
      */
     public boolean unload(Integer id){
+
         if (packagesToDeliver.containsKey(id) && capacity - deliverdPackagesInARound >= packagesToDeliver.get(id)){
-            
             
             deliverdPackagesInARound += packagesToDeliver.get(id);
             packagesToDeliver.remove(id);
@@ -49,17 +50,28 @@ public class Ant {
      * @return
      */
     public boolean load(Integer pos){
+
         if(pos == start && deliverdPackagesInARound > 0
          && (int)((numberOfPackages - deliverdPackagesTotal + capacity - 1) / capacity) == 
          (int)((numberOfPackages - deliverdPackagesTotal + capacity - 1 - deliverdPackagesInARound) / capacity + 1)){
             
-            
             deliverdPackagesTotal += deliverdPackagesInARound;
             deliverdPackagesInARound = 0;
+            loadCount++;
             return true;
-        }else{
-            return false;
+        }else if(pos == start){
+            Integer[] g =  packagesToDeliver.values().toArray(new Integer[1]);
+            for(int i = 0; i < g.length; i++){
+                if(g[i] + deliverdPackagesInARound < capacity){
+                    return false;
+                }
+            }
+            deliverdPackagesTotal += deliverdPackagesInARound;
+            deliverdPackagesInARound = 0;
+            loadCount++;
+            return true;
         }
+        return false;
     }
     
     /**
