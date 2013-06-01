@@ -32,6 +32,8 @@ public class Simulation {
     public static final int MAXHISTORY = 20; // maximum der History der
                                              // gefundenen Wege
 
+	public static int BESTNUMBEROFDELIVERYVANS = 0x7FFFFFFF;//speichert die beste gefundene Anzahl von benoetigten Lieferwagen 
+											 
     final public List<Connection> CONNECTIONS;
     final public List<Ant> ANTLIST;
     final public List<Node> NODES;
@@ -175,18 +177,16 @@ public class Simulation {
 
                 // bist du fertig ?
                 if (COLONY.tourFinished(ant, nextNode.ID)) {
-                    int tempLength = COLONY.length(ant.visitedNodes, connections); // Laenge
-                                                                                              // berechnen
+                    List<Integer> temp = ant.visitedNodes;
+                    temp = optimizePath(ant.visitedNodes, connections);
+                    int tempLength = COLONY.length(temp, connections); // Laenge berechnen
 
                     // Bei kuerzerer Laenge die Laenge in bestLength abspeichern
                     // und die verwendete Route in bestRoute
-                    if (((bestLength - tempLength) > 0) || bestLength == 0) {
-                        bestLength = tempLength; // Neue kuerzeste Laenge
-                                                 // abspeichern
-                        bestRoute.addFirst(ant.visitedNodes); // Neue
-                                                                         // kuerzeste
-                                                                         // Route
-                                                                         // abspeichern
+                    if (BESTNUMBEROFDELIVERYVANS > ant.loadCount || (BESTNUMBEROFDELIVERYVANS == ant.loadCount && ((bestLength - tempLength) > 0) || bestLength == 0)) {
+                        BESTNUMBEROFDELIVERYVANS = ant.loadCount;
+                        bestLength = tempLength; // Neue kuerzeste Laenge abspeichern
+                        bestRoute.addFirst(temp); // Neue kuerzeste Route abspeichern
                         if (bestRoute.size() > MAXHISTORY) {
                             bestRoute.removeLast();
                         }
@@ -194,6 +194,7 @@ public class Simulation {
 
                     // Besuchte Nodes der Ameise resetten
                     antList.set(j, COLONY.clear(antList.get(j)));
+
 
                 }
 
@@ -208,4 +209,77 @@ public class Simulation {
         return new Simulation(CITIES, TESTDATA, connections, antList, nodes, bestRoute, this.STEPS + steps);
     } // methode
 
+	/**
+    * Optimiert den Weg den die Ameise nimmt
+    * @param temp
+    * @param connections
+    * @return
+    */
+   List<Integer> optimizePath(List<Integer> temp, List<Connection> connections){
+        List<Integer> path = temp.subList(0, temp.size());
+        Ant ant = new Ant(ACOImpl.packages, ACOImpl.total);
+        for(int i = 0; i + 2 < path.size(); i++){
+            if(!(ant.load(path.get(i + 1)) || ant.unload(path.get(i + 1))) && 
+                    path.get(i) == path.get(i + 2)){
+                path.remove(i + 1);
+                path.remove(i + 1);
+                i--;
+            }
+        }
+
+        for(int i = 0; i + 1 < path.size(); i++){
+            if(path.get(i) == path.get(i + 1)){
+                path.remove(i + 1);
+                i--;
+            }
+        }
+        ant = new Ant(ACOImpl.packages, ACOImpl.total);
+        int load = 0;
+        int unload1 = 0;
+        int unload2 = 0;
+        List<Integer> l = new ArrayList<Integer>();
+        l.add(path.get(0));
+        for(int i = 1; i < path.size(); i++){
+            if(ant.unload(path.get(i))){
+                if(unload1 == 0){
+                    unload1 = i;
+                    unload2 = i;
+                }else{
+                    unload2 = i;
+                }
+            }
+            if(ant.load(path.get(i)) || i == path.size() - 1){
+               if(COLONY.length(path.subList(load, unload2 + 1), connections) < COLONY.length(path.subList(unload2, i + 1), connections)){
+                    List<Integer> p = path.subList(load, unload2 + 1);
+                    for(int j = 1; j < p.size(); j++){
+                        l.add(p.get(j));
+                    }
+                    for(int j = p.size() - 2; j >= 0; j--){
+                        l.add(p.get(j));
+                    }
+                }else if(COLONY.length(path.subList(load, unload1 + 1), connections) > COLONY.length(path.subList(unload1, i + 1), connections)){
+                    List<Integer> p = path.subList(unload1, i + 1);
+                    for(int j = p.size() - 2; j >= 0; j--){
+                        l.add(p.get(j));
+                    }
+                    for(int j = 1; j < p.size(); j++){
+                        l.add(p.get(j));
+                    }
+                }else{
+                    List<Integer> p = path.subList(load + 1, i + 1);
+                    l.addAll(p);
+                }
+                unload1 = 0;
+                load = i;
+            }
+        }
+        path = l;
+        for(int i = 0; i + 1 < path.size(); i++){
+            if(path.get(i) == path.get(i + 1)){
+                path.remove(i + 1);
+                i--;
+            }
+        }
+        return path;
+    }
 }
