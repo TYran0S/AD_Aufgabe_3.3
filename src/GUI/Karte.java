@@ -1,8 +1,12 @@
 package GUI;
 
+import java.awt.FlowLayout;
 import java.awt.image.IndexColorModel;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sun.javafx.tk.quantum.PopupScene;
+
 import aufgabe3_1.*;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -16,6 +20,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.*;
+import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
 
 public class Karte extends Application implements View {
@@ -34,6 +39,7 @@ public class Karte extends Application implements View {
     TextArea ausgabe_area;
     TextField eingabe_text_feld;
     TextField ausgabe_text_feld;
+    TextField pakete;
     Scene scene;
     Stage primaryStage;
     List <Integer> xCord;
@@ -41,7 +47,7 @@ public class Karte extends Application implements View {
     List <Integer> cityIds = new ArrayList<Integer>();
     List <Node> nodes = new ArrayList<Node>();
     Label[] city = new Label[10];  
-    
+    Label label;
     List<Label> cityLabel = new ArrayList<Label>();  /* labels fuer die selbstgebaute Karte */
     List <Integer> selectedLabels = new ArrayList<Integer>();  /* labelIds fuer die zu verbinden Labels */
     Label lastlabel = null;
@@ -51,7 +57,7 @@ public class Karte extends Application implements View {
     int y1 = 0 ;
     int x2 = 0 ;
     int y2 = 0 ;
-    int cityId1, citiId2;
+    int cityId1, citiId2, anzahl;
 
 
     final public static int BEST6 = 1365;
@@ -134,10 +140,17 @@ public class Karte extends Application implements View {
             @Override
             public void handle(ActionEvent event)
         {
+            TextArea info = new TextArea("Info: Folgende Eingaben sind möglich \n" +
+            							 "doppel Klick linke Maustaste: erstelle Stadt \n" +
+            							 "einfach Klick linke Maustaste auf Stadt: Stadt makieren -> dann Auswahl der 2. Stadt um eine Verbindung zu erzeugen \n" +
+            							 "einfach Klick rechte Maustaste auf Stadt: Paketmenge bestimmen ");
+            info.setEditable(false);
+            info.setPrefRowCount(4);
+            root.setTop(info);
             root.setCenter(benutzer_pane);	
             getCoordinatesPerClick();
 
-        }
+        } 
 
 
         });
@@ -180,15 +193,16 @@ public class Karte extends Application implements View {
 
     private void getCoordinatesPerClick() {
 
-        if (xCord == null) {
+        
+    	if (xCord == null) {
             xCord = new ArrayList<Integer>();
             yCord = new ArrayList<Integer>();
         }
         benutzer_pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 free = true; /*HACK*/
-
-                if ( event.getClickCount() == 2 ){
+                int anzahl;
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2 ){
                     int x,y;
                     //System.out.println(event.getButton().toString());
                     event.getButton().toString();
@@ -218,13 +232,13 @@ public class Karte extends Application implements View {
                     tmp.setText(String.valueOf(index));
                     tmp.setOnMouseClicked(new EventHandler<MouseEvent>(){
                         public void handle(MouseEvent event){
-                            Label label; /* das momentan angeclickte label */ 
+                        	/* das momentan angeclickte label */ 
                             label=  ((Label)event.getSource());
-                            if ( event.getClickCount() == 1){
+                            if ( event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1){// if event.getmouseButton == mousebutton.primary && rest
                                 Path path = new Path();
                                 MoveTo moveTo = new MoveTo();
                                 /* TODO durch if ersetzen ueberfluessigen kram raus + new connections*/
-                                switch (selectedLabels.size()) {
+                                switch (selectedLabels.size()) { 
                                     case 0: 
                                         selectedLabels.add(Integer.valueOf(label.getId()));
                                         label.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"))));
@@ -275,6 +289,34 @@ public class Karte extends Application implements View {
                                         System.out.println("switch fails");
                                 }
 
+                            }
+                            else if(event.getButton() == MouseButton.SECONDARY && event.getClickCount() == 1){
+                            	final GridPane testPane = new GridPane();
+                            	Label text_info1 = new Label("Paketanzahl:");
+                            	pakete = new TextField("0");
+                            	Button eingabe_anzahl = new Button("weiter");
+                            	testPane.add(eingabe_anzahl, 2, 2);
+                            	testPane.add(pakete, 2, 1);
+                            	testPane.add(text_info1, 1, 1);
+                            	root.setRight(testPane);
+                            	
+                                eingabe_anzahl.setOnAction(new EventHandler<ActionEvent>() {
+                                    @Override
+                                    public void handle(ActionEvent event) {
+                                        try {
+                                            System.out.println(Integer.parseInt(pakete.getText()));
+                                           nodes.get(Integer.parseInt((label.getId()))).setAmountOfPackets(Integer.parseInt(pakete.getText()));
+                                        } catch (NumberFormatException e) {
+                                            pakete.setText("Int-Werte > 0 eingeben");
+                                        }
+                                        root.setRight(null);
+                                    }
+                                });
+                            
+                                System.out.println(nodes.toString());
+                                System.out.println("--------------------------------------------------nodes--------------------------------------------");
+                            	
+                            	
                             }
                             lastlabel = label;
 
