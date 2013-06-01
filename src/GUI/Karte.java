@@ -141,11 +141,14 @@ public class Karte extends Application implements View {
             public void handle(ActionEvent event)
         {
             TextArea info = new TextArea("Info: Folgende Eingaben sind möglich \n" +
-            							 "doppel Klick linke Maustaste: erstelle Stadt \n" +
-            							 "einfach Klick linke Maustaste auf Stadt: Stadt makieren -> dann Auswahl der 2. Stadt um eine Verbindung zu erzeugen \n" +
-            							 "einfach Klick rechte Maustaste auf Stadt: Paketmenge bestimmen ");
+                "doppel Klick linke Maustaste: erstelle Stadt \n" +
+                "einfach Klick linke Maustaste auf Stadt: Stadt makieren -> dann Auswahl der 2. Stadt um eine Verbindung zu erzeugen \n" +
+                "einfach Klick rechte Maustaste auf Stadt: Paketmenge bestimmen ");
             info.setEditable(false);
             info.setPrefRowCount(4);
+            info.setStyle("-fx-text-fill: green;");
+            info.setStyle("-fx-background-color: black;");
+            info.setStyle( "-fx-text-fill: green;"+ "-fx-background-color: black;");
             root.setTop(info);
             root.setCenter(benutzer_pane);	
             getCoordinatesPerClick();
@@ -193,8 +196,8 @@ public class Karte extends Application implements View {
 
     private void getCoordinatesPerClick() {
 
-        
-    	if (xCord == null) {
+
+        if (xCord == null) {
             xCord = new ArrayList<Integer>();
             yCord = new ArrayList<Integer>();
         }
@@ -232,7 +235,7 @@ public class Karte extends Application implements View {
                     tmp.setText(String.valueOf(index));
                     tmp.setOnMouseClicked(new EventHandler<MouseEvent>(){
                         public void handle(MouseEvent event){
-                        	/* das momentan angeclickte label */ 
+                            /* das momentan angeclickte label */ 
                             label=  ((Label)event.getSource());
                             if ( event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1){// if event.getmouseButton == mousebutton.primary && rest
                                 Path path = new Path();
@@ -247,7 +250,8 @@ public class Karte extends Application implements View {
                                         /* toggle already selected */
                                         if ((cityLabel.get(selectedLabels.get(0)) == label )) {
                                             label.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
-                                            selectedLabels.clear();
+                                            //selectedLabels.clear();
+                                            //selectedLabels.remove(0);
                                         }
                                         else{
                                             selectedLabels.add(Integer.valueOf(label.getId()));
@@ -278,45 +282,51 @@ public class Karte extends Application implements View {
                                             nodes.get(selectedLabels.get(1)).trails.add(connection);
                                             customconnections.add(connection);
                                             System.out.println("labelId: " + label.getId());
+                                            cityLabel.get(selectedLabels.get(1)).setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"))));
                                             cityLabel.get(selectedLabels.get(0)).setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
-                                            selectedLabels.clear();
+                                            //selectedLabels.clear();
+                                            selectedLabels.remove(0);
+
                                             //System.out.println(customconnections.toString());
                                             System.out.println(nodes.toString());
                                             System.out.println("--------------------------------------------------nodes--------------------------------------------");
                                         }
-                                        break;
+                                  break;
                                     default:
-                                        System.out.println("switch fails");
+                    System.out.println("switch fails");
                                 }
 
                             }
                             else if(event.getButton() == MouseButton.SECONDARY && event.getClickCount() == 1){
-                            	final GridPane testPane = new GridPane();
-                            	Label text_info1 = new Label("Paketanzahl:");
-                            	pakete = new TextField("0");
-                            	Button eingabe_anzahl = new Button("weiter");
-                            	testPane.add(eingabe_anzahl, 2, 2);
-                            	testPane.add(pakete, 2, 1);
-                            	testPane.add(text_info1, 1, 1);
-                            	root.setRight(testPane);
-                            	
+                                final GridPane testPane = new GridPane();
+                                pakete = new TextField("0");
+                                Label text_info1 = new Label("Paketanzahl:");
+                                Button eingabe_anzahl = new Button("weiter");
+                                /* die Reihenfolge hier ist wichtig für TAB durch die elemente */
+                                testPane.add(pakete, 2, 1);
+                                testPane.add(eingabe_anzahl, 2, 2);
+                                testPane.add(text_info1, 1, 1);
+                                root.setRight(testPane);
+                                root.setTop(testPane);
+                                pakete.setFocusTraversable(true);
+                                pakete.requestFocus();
                                 eingabe_anzahl.setOnAction(new EventHandler<ActionEvent>() {
                                     @Override
                                     public void handle(ActionEvent event) {
                                         try {
                                             System.out.println(Integer.parseInt(pakete.getText()));
-                                           nodes.get(Integer.parseInt((label.getId()))).setAmountOfPackets(Integer.parseInt(pakete.getText()));
+                                            nodes.get(Integer.parseInt((label.getId()))).setAmountOfPackets(Integer.parseInt(pakete.getText()));
                                         } catch (NumberFormatException e) {
                                             pakete.setText("Int-Werte > 0 eingeben");
                                         }
-                                        root.setRight(null);
+                                        root.setTop(null);
                                     }
                                 });
-                            
+
                                 System.out.println(nodes.toString());
                                 System.out.println("--------------------------------------------------nodes--------------------------------------------");
-                            	
-                            	
+
+
                             }
                             lastlabel = label;
 
