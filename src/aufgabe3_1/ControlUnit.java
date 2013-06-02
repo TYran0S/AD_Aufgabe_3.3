@@ -22,14 +22,14 @@ public class ControlUnit implements Controller {
 		VIEW = gui;
 		SimAnt=new Simulation(anzahlCities, file);
 	}
-	
-	
-		public ControlUnit(View gui, int anzahlCities, List<Connection> con, List<Node> nod){
+
+
+	public ControlUnit(View gui, int anzahlCities, List<Connection> con, List<Node> nod, List<List<Integer>> nodePackage){
 		//uebergabe der GUI!
 		VIEW = gui;
-		SimAnt=new Simulation(anzahlCities,con, nod);
+		SimAnt=new Simulation(anzahlCities,con, nod, nodePackage);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see aufgabe3_1.Controller#doSteps(int)
 	 */
@@ -39,12 +39,12 @@ public class ControlUnit implements Controller {
 		if(!Simulation.bestTours.isEmpty()){
 	                this.VIEW.newPath(Simulation.bestTours, SimAnt.CONNECTIONS);
 		}else if(!SimAnt.BESTROUTE.isEmpty()){
-			
+
 			/*
 			 * Die Eins muss dann hochgezählt werden für verschiedene Colors
 			 * 
 			 * */
-			
+
 			//VIEW.newPath(SimAnt.BESTROUTE.get(0), new ACOImpl().length(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS), new ACOImpl().visitedStreets(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS ),1);
 		}
 		return this.SimAnt.STEPS;
@@ -70,8 +70,8 @@ public class ControlUnit implements Controller {
 			 * Die Eins muss dann hochgezählt werden für verschiedene Colors
 			 * 
 			 * */
-			
-			
+
+
 			//this.VIEW.newPath(this.SimAnt.BESTROUTE.get(0), new ACOImpl().length(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS),new ACOImpl().visitedStreets(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS), 1);
 		}
 		return this.SimAnt.STEPS;
@@ -102,7 +102,7 @@ public class ControlUnit implements Controller {
 		}
 		return nodes;
 	}
-	
+
 	@Override
 	public List<Connection> giveConnections(boolean really) {
 		List<Connection> connections;
