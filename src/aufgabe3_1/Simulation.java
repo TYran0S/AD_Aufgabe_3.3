@@ -83,20 +83,8 @@ public class Simulation {
         BESTROUTE = new LinkedList<List<Integer>>();
         STEPS = 0;
     }
-    public Simulation(int cities, List<Connection> con, List<Node> nod) {
-        List<List<Integer>> t = new ArrayList<List<Integer>>();
-            t.add(new ArrayList<Integer>());
-            t.add(new ArrayList<Integer>());
-            t.get(0).add(5);
-            t.get(0).add(2);
-            t.get(0).add(3);
-            t.get(0).add(4);
-            t.get(0).add(6);
-            t.get(1).add(1);
-            t.get(1).add(1);
-            t.get(1).add(1);
-            t.get(1).add(1);
-            t.get(1).add(1);
+    public Simulation(int cities, List<Connection> con, List<Node> nod, List<List<Integer>> t) {
+
             
             ACOImpl.ACOImplInit(t);
             
@@ -209,7 +197,7 @@ public class Simulation {
                 connections.set((tempConnection.ID - 1), COLONY.updatePheromones(tempConnection, Q));
 
                 // Nodes mit aktualisierten Connections erzeugen
-                nodes = Parser.initNodes(connections);
+                //TODO nodes = Parser.initNodes(connections);
 
                 // Entladen der Packete wenn moeglich
                 ant.unload(nextNode.ID);
@@ -243,7 +231,7 @@ public class Simulation {
             connections = COLONY.evaporate(connections, RHO);
 
             // Nodes mit aktualisierten Connections erzeugen
-            nodes = Parser.initNodes(connections);
+            //TODO nodes = Parser.initNodes(connections);
         }
 		bestTours = calculateTours(bestRoute.getFirst());
         return new Simulation(CITIES, TESTDATA, connections, antList, nodes, bestRoute, this.STEPS + steps);
