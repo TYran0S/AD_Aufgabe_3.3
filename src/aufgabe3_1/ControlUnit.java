@@ -72,7 +72,7 @@ public class ControlUnit implements Controller {
 			 * */
 			
 			
-			this.VIEW.newPath(this.SimAnt.BESTROUTE.get(0), new ACOImpl().length(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS),new ACOImpl().visitedStreets(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS), 1);
+			//this.VIEW.newPath(this.SimAnt.BESTROUTE.get(0), new ACOImpl().length(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS),new ACOImpl().visitedStreets(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS), 1);
 		}
 		return this.SimAnt.STEPS;
 	}
