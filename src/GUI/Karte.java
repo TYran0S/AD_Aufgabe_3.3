@@ -49,6 +49,7 @@ public class Karte extends Application implements View {
     //List <Path> pathArrList = null;
     Label lastlabel = null;
     boolean free = true ;
+    String paketAnzeige = "";
 
     int x1 = 0 ;
     int y1 = 0 ;
@@ -88,7 +89,7 @@ public class Karte extends Application implements View {
         makeChoiceButtons();
 
 
-        scene = new Scene(root, 1024, 600);
+        scene = new Scene(root, 1024, 800);
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
 
@@ -303,12 +304,13 @@ public class Karte extends Application implements View {
                                     @Override
                                     public void handle(ActionEvent event) {
                                         try {
-                                            System.out.println(Integer.parseInt(pakete.getText()));
                                             nodes.get(Integer.parseInt((label.getId()))).setAmountOfPackets(Integer.parseInt(pakete.getText()));
                                         } catch (NumberFormatException e) {
                                             pakete.setText("Int-Werte > 0 eingeben");
                                         }
                                         root.setRight(null);
+                                        paketAnzeige += ("Node: " + Integer.parseInt((label.getId())) + "Pakete: " + Integer.parseInt(pakete.getText()) + "\n");
+                                        ausgabe_area.setText(paketAnzeige );
                                     }
                                 });
 
@@ -318,6 +320,20 @@ public class Karte extends Application implements View {
 
                             }
                             lastlabel = label;
+                            if(nodes.size() >= 2 && customconnections.size() >= 1)
+                            {
+                            	 Button fineshed = new Button("fertig");
+                                 root.setLeft(fineshed);
+                                 fineshed.setOnAction(new EventHandler<ActionEvent>() {
+                                     @Override
+                                     public void handle(ActionEvent event) {
+                                         scene.getStylesheets().clear();
+                                         startUserCity(cityIds.size(), customconnections, nodes);
+                                         
+                                     };
+                                 }
+                                 );
+                            }
 
                         }});
                     //if (free) {
@@ -327,6 +343,7 @@ public class Karte extends Application implements View {
                         nodes.add(node);
                     //}
                     ausgabe_area.setText("Position X = " + x + "Position Y = " + y + "\n");
+                    
 
                 }
             }
@@ -376,13 +393,53 @@ public class Karte extends Application implements View {
             };
         }
         );
+        
+        Button button_User = new Button("Benutzer Stadt");
+        button_User.setPrefSize(1024, 200);     
+        button_User.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                scene.getStylesheets().clear();
+                root.setCenter(benutzer_pane); 
+                TextArea info = new TextArea("Info: Folgende Eingaben sind möglich \n" +
+                        "doppel Klick : erstelle Stadt \n" +
+                        "Klick auf Stadt: Stadt makieren -> dann Auswahl der 2. Stadt um eine Verbindung zu erzeugen \n" +
+                        "rechtsKlick auf Stadt: Paketmenge bestimmen ");
+                    info.setEditable(false);
+                    info.setPrefRowCount(4);
+                    //info.setStyle("-fx-text-fill:white;");
+                    //info.setStyle("-fx-background-color: black;");
+                    info.setStyle( "-fx-text-fill: white;"+ "-fx-background-color: black;");
+                    root.setTop(info);
+                    ausgabe_area = new TextArea("Beste Route");
+                    ausgabe_area.setEditable(false);
+                    ausgabe_area.setPrefRowCount(4);
+                    root.setBottom(ausgabe_area);
+                    getCoordinatesPerClick();
+                                      
+            };
+        }
+        );
 
         button_pane.add(button_6, 1, 1);
         button_pane.add(button_10, 1, 2);
         button_pane.add(button_20, 1, 3);
+        button_pane.add(button_User, 1, 4);
 
     }
-
+/* TODO: nur zum finden*/
+    private void startUserCity(int anzahl, List<Connection> connection, List<Node> nod)
+    {
+    	
+    	this.con = new ControlUnit(this, anzahl, connection, nod);
+    	System.out.println("Anzahl = " + anzahl);
+    	System.out.println("Connections = " + connection.size());
+    	System.out.println("Nodes = " + nod.size());
+    	pathlist = new Path[connection.size()];
+    	con.doSteps(1000);
+    	
+    }
+    
     //Controller erst starten wenn Anzahl der Stï¿½dte ausgewï¿½hlt wurde.
     private void letsGO(int anzahl, String datei){
         this.con = new ControlUnit(this, anzahl, datei);
