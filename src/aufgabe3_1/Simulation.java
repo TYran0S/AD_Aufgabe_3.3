@@ -27,6 +27,7 @@ public class Simulation {
     final public static double RHO = 0.5; // Evaporationskonstante
     final public static double Q = 1.0; // Pheromon-Menge eines
     // Connection-Updates
+	public static List<List<Integer>> bestTours;
     final public static int MAXCYCLES = 500000; // Maximale schritte der
     // Simulation
     public static final int MAXHISTORY = 20; // maximum der History der
@@ -244,7 +245,7 @@ public class Simulation {
             // Nodes mit aktualisierten Connections erzeugen
             nodes = Parser.initNodes(connections);
         }
-
+		bestTours = calculateTours(bestRoute.getFirst());
         return new Simulation(CITIES, TESTDATA, connections, antList, nodes, bestRoute, this.STEPS + steps);
     } // methode
 
@@ -320,5 +321,24 @@ public class Simulation {
             }
         }
         return path;
+    }
+	
+	    /**
+     * berrechnet die einzelnen Touren einer Ameise
+     * @param path
+     * @return
+     */
+    ArrayList<List<Integer>> calculateTours(List<Integer> path) {
+        ArrayList<List<Integer>> tours = new ArrayList<List<Integer>>();
+        Ant ant = new Ant(ACOImpl.packages, ACOImpl.total);
+        int j = 0;
+        for (int i = 0; i < path.size(); i++) {
+            ant.unload(path.get(i));
+            if (ant.load(path.get(i)) || i == path.size() - 1) {
+                tours.add(path.subList(j, i + 1));
+                j = i;
+            }
+        }
+        return tours;
     }
 }

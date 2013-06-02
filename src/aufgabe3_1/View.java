@@ -22,5 +22,5 @@ public interface View {
 	 * @param path
 	 * @return �bertragung erfolgreich
 	 */
-	public boolean newPath(List<Integer> path, final int laenge, List<Integer> visited, int color);
+	public boolean newPath(List<List<Integer>> path, List<Connection> c);
 }

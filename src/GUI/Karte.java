@@ -395,33 +395,39 @@ public class Karte extends Application implements View {
 
     //Controller ruft diese Methode auf um die neue beste Route zu makieren
     @Override
-    public boolean newPath(final List<Integer> path, final int laenge, final List<Integer> visited, final int color) {
+    public boolean newPath(final List<List<Integer>> path, List<Connection> c) {
 
-        // Restaurieren (alle Straï¿½en schwarz)
+        // Restaurieren (alle Strassen schwarz)
         for (int j = 0; j < pathlist.length; j++) {
             pathlist[j].setStroke(Color.BLACK);
         }
-        // Nur bestimmte Straï¿½en rot
-        for (int i = 0; i < visited.size(); i++) {
-            pathlist[visited.get(i)-1].setStroke(getColor(3));
-        }
 
-        //Ausgabe des Path als String
-        String ausgabe = new String();
+        List<Integer> temp;
+        // Nur bestimmte Strassen rot
+        for (int i = 0; i < path.size(); i++) {
+            for (int j = 0; j < path.size(); j++) {
+                if (path.get(i).size() > path.get(j).size()) {
+                    temp = path.get(i);
+                    path.set(i, path.get(j));
+                    path.set(j, temp);
+                }
+            }
+        }
         for (int j = 0; j < path.size(); j++) {
-            ausgabe = ausgabe + "=>" +path.get(j);      
+            List<Integer> visited = new ACOImpl().visitedStreets(path.get(j), c);
+            for (int i = 0; i < visited.size(); i++) {
+                pathlist[visited.get(i) - 1].setStroke(getColor(j));
+            }
         }
-        ausgabe = ausgabe + "\nLaenge: " + laenge + "m\n";
-        if (cities.size()==6) {
-            ausgabe = ausgabe + "Bestsolution: " + BEST6 + "\n\n\n\n\n";
-        }
-        if(cities.size()==10){
-            ausgabe = ausgabe + "Bestsolution: " + BEST10 + "\n";
-        }
-        if(cities.size()==20){
-            ausgabe = ausgabe + "Bestsolution: " + BEST20 + "\n";
-        }
+        // Ausgabe des Path als String
+        String ausgabe = new String();
+        for (int i = 0; i < path.size(); i++) {
+            for (int j = 0; j < path.get(i).size(); j++) {
+                ausgabe = ausgabe + "=>" + path.get(i).get(j);
+            }
 
+            ausgabe = ausgabe + "\nLaenge: " + new ACOImpl().length(path.get(i), c) + "m\n";
+        }
         ausgabe_area.setText(ausgabe);
 
         return false;
