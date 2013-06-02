@@ -15,6 +15,7 @@ public class ControlUnit implements Controller {
 
     private Simulation SimAnt;
     final private View VIEW;
+    int f = 1;
     
     
 	public ControlUnit(View gui, int anzahlCities, String file){
@@ -24,7 +25,7 @@ public class ControlUnit implements Controller {
 	}
 	
 	
-		public ControlUnit(View gui, int anzahlCities, List<Connection> con, List<Node> nod){
+	public ControlUnit(View gui, int anzahlCities, List<Connection> con, List<Node> nod){
 		//uebergabe der GUI!
 		VIEW = gui;
 		SimAnt=new Simulation(anzahlCities,con, nod);
@@ -36,6 +37,7 @@ public class ControlUnit implements Controller {
 	@Override
 	public int doSteps(int steps) {
 		SimAnt=SimAnt.doSteps(steps);
+		
 		if(!SimAnt.BESTROUTE.isEmpty()){
 			
 			/*
@@ -43,7 +45,7 @@ public class ControlUnit implements Controller {
 			 * 
 			 * */
 			
-			VIEW.newPath(SimAnt.BESTROUTE.get(0), new ACOImpl().length(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS), new ACOImpl().visitedStreets(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS ),1);
+			VIEW.newPath(SimAnt.BESTROUTE.get(0), new ACOImpl().length(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS), new ACOImpl().visitedStreets(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS ),f++);
 		}
 		return this.SimAnt.STEPS;
 	}
@@ -70,7 +72,7 @@ public class ControlUnit implements Controller {
 			 * */
 			
 			
-			this.VIEW.newPath(this.SimAnt.BESTROUTE.get(0), new ACOImpl().length(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS),new ACOImpl().visitedStreets(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS), 1);
+			this.VIEW.newPath(this.SimAnt.BESTROUTE.get(0), new ACOImpl().length(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS),new ACOImpl().visitedStreets(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS), f++);
 		}
 		return this.SimAnt.STEPS;
 	}
