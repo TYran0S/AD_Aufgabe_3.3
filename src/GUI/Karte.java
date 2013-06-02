@@ -218,7 +218,7 @@ public class Karte extends Application implements View {
                         public void handle(MouseEvent event){
                             /* das momentan angeclickte label */ 
                             label=  ((Label)event.getSource());
-                            int labelId = Integer.valueOf(label.getId())+1;
+                            int labelId = Integer.valueOf(label.getId());
                             if ( event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1){// if event.getmouseButton == mousebutton.primary && rest
                                 /* TODO durch if ersetzen ueberfluessigen kram raus + new connections*/
                                 switch (selectedLabels.size()) { 
