@@ -1,7 +1,10 @@
 package GUI;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 
 import aufgabe3_1.*;
@@ -50,6 +53,9 @@ public class Karte extends Application implements View {
     Label lastlabel = null;
     boolean free = true ;
     String paketAnzeige = "";
+    List<List<Integer>> nodePackage = new ArrayList<List<Integer>>() ;
+
+    	
 
     int x1 = 0 ;
     int y1 = 0 ;
@@ -131,30 +137,6 @@ public class Karte extends Application implements View {
                 ;
             }
         });
-        int count = 0;
-
-        Button benutzer_Stadt = new Button("Benutzer definierter Straßenplan");
-        benutzer_Stadt.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event)
-        {
-            TextArea info = new TextArea("Info: Folgende Eingaben sind möglich \n" +
-                "doppel Klick : erstelle Stadt \n" +
-                "Klick auf Stadt: Stadt makieren -> dann Auswahl der 2. Stadt um eine Verbindung zu erzeugen \n" +
-                "rechtsKlick auf Stadt: Paketmenge bestimmen ");
-            info.setEditable(false);
-            info.setPrefRowCount(4);
-            //info.setStyle("-fx-text-fill:white;");
-            //info.setStyle("-fx-background-color: black;");
-            info.setStyle( "-fx-text-fill: white;"+ "-fx-background-color: black;");
-            root.setTop(info);
-            root.setCenter(benutzer_pane);  
-            getCoordinatesPerClick();
-
-        } 
-
-
-        });
 
         ausgabe_area = new TextArea("Beste Route");
         ausgabe_area.setEditable(false);
@@ -188,14 +170,17 @@ public class Karte extends Application implements View {
         button_pane.add(default_button, 1, 2);
         button_pane.add(start_button, 2, 2);
         button_pane.add(eingabe_text_feld, 3, 2);
-        button_pane.add(benutzer_Stadt, 4, 2);
     }
 
 
     private void getCoordinatesPerClick() {
 
 
-        if (xCord == null) {
+        //liste Nodes
+    	nodePackage.add(new ArrayList<Integer>());
+        //liste Pakete
+    	nodePackage.add(new ArrayList<Integer>());
+    	if (xCord == null) {
             xCord = new ArrayList<Integer>();
             yCord = new ArrayList<Integer>();
         }
@@ -219,7 +204,7 @@ public class Karte extends Application implements View {
                     //int index = yCord.indexOf(yCord.get(yCord.size()-1));
                     int index = yCord.indexOf(y);
                     int length = index + 1; 
-                    if (length >= 15) {
+                    if (length >= 10) {
                         System.out.println("max 10 cities");
                         return;
                     }
@@ -265,10 +250,10 @@ public class Karte extends Application implements View {
                                             List<Integer> tmpCitylist = new ArrayList<Integer>();
                                             //System.out.println(selectedLabels.get(0));
                                             /* Check ob eine Verbindung vorhanden ist */
-                                            if (!conExists(cityId1, cityId2)) {
-                                                tmpCitylist.add(cityId1);
-                                                tmpCitylist.add(cityId2);
-                                                Connection connection = new Connection(cityId1, distance, 0, tmpCitylist);
+                                            if (!conExists(cityId1+1, cityId2+1)) {
+                                                tmpCitylist.add(cityId1+1);
+                                                tmpCitylist.add(cityId2+1);
+                                                Connection connection = new Connection(cityId1+1, distance, 1, tmpCitylist);
                                                 nodes.get(cityId1).trails.add(connection);
                                                 nodes.get(cityId2).trails.add(connection);
                                                 customconnections.add(connection);
@@ -287,7 +272,7 @@ public class Karte extends Application implements View {
                                 }
 
                             }
-                            else if(event.getButton() == MouseButton.SECONDARY && event.getClickCount() == 1){
+                            else if(event.getButton() == MouseButton.SECONDARY && event.getClickCount() == 1 && Integer.parseInt(((Label)event.getSource()).getId()) != 0 ){
                                 final GridPane testPane = new GridPane();
                                 pakete = new TextField("0");
                                 Label text_info1 = new Label("Paketanzahl:");
@@ -308,6 +293,8 @@ public class Karte extends Application implements View {
                                         } catch (NumberFormatException e) {
                                             pakete.setText("Int-Werte > 0 eingeben");
                                         }
+                                        nodePackage.get(0).add(Integer.parseInt((label.getId())));
+                                        nodePackage.get(1).add(Integer.parseInt(pakete.getText()));
                                         root.setRight(null);
                                         paketAnzeige += ("Node: " + Integer.parseInt((label.getId())) + "Pakete: " + Integer.parseInt(pakete.getText()) + "\n");
                                         ausgabe_area.setText(paketAnzeige );
@@ -328,7 +315,7 @@ public class Karte extends Application implements View {
                                      @Override
                                      public void handle(ActionEvent event) {
                                          scene.getStylesheets().clear();
-                                         startUserCity(cityIds.size(), customconnections, nodes);
+                                         startUserCity(customconnections, nodes);
                                          
                                      };
                                  }
@@ -339,7 +326,7 @@ public class Karte extends Application implements View {
                     //if (free) {
                         benutzer_pane.getChildren().add(tmp);
                         ArrayList<Connection> trails = new ArrayList<Connection>();
-                        Node node = new Node(Integer.valueOf(tmp.getId()), trails,0);
+                        Node node = new Node(Integer.valueOf(tmp.getId())+1, trails,0);
                         nodes.add(node);
                     //}
                     ausgabe_area.setText("Position X = " + x + "Position Y = " + y + "\n");
@@ -428,10 +415,10 @@ public class Karte extends Application implements View {
 
     }
 /* TODO: nur zum finden*/
-    private void startUserCity(int anzahl, List<Connection> connection, List<Node> nod)
+    private void startUserCity( List<Connection> connection, List<Node> nod)
     {
     	
-    	this.con = new ControlUnit(this, anzahl, connection, nod);
+    	this.con = new ControlUnit(this, nod.size(), connection, nod, nodePackage);
     	System.out.println("Anzahl = " + anzahl);
     	System.out.println("Connections = " + connection.size());
     	System.out.println("Nodes = " + nod.size());
