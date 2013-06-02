@@ -26,14 +26,14 @@ public class Simulation {
     final public static double BETA = 5.0; // Einfluss der Weglaenge
     final public static double RHO = 0.5; // Evaporationskonstante
     final public static double Q = 1.0; // Pheromon-Menge eines
-                                        // Connection-Updates
+    // Connection-Updates
     final public static int MAXCYCLES = 500000; // Maximale schritte der
-                                                // Simulation
+    // Simulation
     public static final int MAXHISTORY = 20; // maximum der History der
-                                             // gefundenen Wege
+    // gefundenen Wege
 
-	public static int BESTNUMBEROFDELIVERYVANS = 0x7FFFFFFF;//speichert die beste gefundene Anzahl von benoetigten Lieferwagen 
-											 
+    public static int BESTNUMBEROFDELIVERYVANS = 0x7FFFFFFF;//speichert die beste gefundene Anzahl von benoetigten Lieferwagen 
+
     final public List<Connection> CONNECTIONS;
     final public List<Ant> ANTLIST;
     final public List<Node> NODES;
@@ -57,60 +57,100 @@ public class Simulation {
         t.get(1).add(1);
 
         ACOImpl.ACOImplInit(t);
-        
+
         CITIES = cities;
         TESTDATA = path;
         COLONY = new ACOImpl();
         List<Connection> connections = Parser.initConnections(Parser.parseTestFile(TESTDATA));// Connections
-                                                                                              // parsen
-                                                                                              // aus
-                                                                                              // der
-                                                                                              // Testdatei
+        // parsen
+        // aus
+        // der
+        // Testdatei
 
         // Connections durch evaporate-Methode mit positivem Pheromon-Wert
         // vorinitialisieren, um bei Wahrscheinlichkeitsberechnung nicht durch 0
         // zu dividieren
         connections = COLONY.evaporate(connections, Q);
         NODES = Parser.initNodes(connections);// Geupdatete Connections in die
-                                              // Liste der Nodes erzeugen
+        // Liste der Nodes erzeugen
 
         CONNECTIONS = connections;
         ANTLIST = COLONY.createAnts(ANTS, NODES.get(STARTNODE - 1));// Kolonie
-                                                                    // von
-                                                                    // Ameisen
-                                                                    // erstellen
+        // von
+        // Ameisen
+        // erstellen
         BESTROUTE = new LinkedList<List<Integer>>();
         STEPS = 0;
     }
-
-    private Simulation(int cities, String path, List<Connection> cons, List<Ant> antlist, List<Node> nodes, List<List<Integer>> bestRoute, int steps) {
+    public Simulation(int cities, List<Connection> con, List<Node> nod) {
         List<List<Integer>> t = new ArrayList<List<Integer>>();
-        t.add(new ArrayList<Integer>());
-        t.add(new ArrayList<Integer>());
-        t.get(0).add(5);
-        t.get(0).add(2);
-        t.get(0).add(3);
-        t.get(0).add(4);
-        t.get(0).add(6);
-        t.get(1).add(1);
-        t.get(1).add(1);
-        t.get(1).add(1);
-        t.get(1).add(1);
-        t.get(1).add(1);
-
-        ACOImpl.ACOImplInit(t);
+            t.add(new ArrayList<Integer>());
+            t.add(new ArrayList<Integer>());
+            t.get(0).add(5);
+            t.get(0).add(2);
+            t.get(0).add(3);
+            t.get(0).add(4);
+            t.get(0).add(6);
+            t.get(1).add(1);
+            t.get(1).add(1);
+            t.get(1).add(1);
+            t.get(1).add(1);
+            t.get(1).add(1);
+            
+            ACOImpl.ACOImplInit(t);
+            
+            TESTDATA = "werd glücklich java";
+            CITIES = cities;
+            COLONY = new ACOImpl();
+            // Connections durch evaporate-Methode mit positivem Pheromon-Wert
+            // vorinitialisieren, um bei Wahrscheinlichkeitsberechnung nicht durch 0
+            // zu dividieren
+            con = COLONY.evaporate(con, Q);
+            NODES = nod;// Geupdatete Connections in die
+        // Liste der Nodes erzeugen
         
-        CITIES = cities;
-        TESTDATA = path;
-        COLONY = new ACOImpl();
-        List<Connection> connections = cons;
-        connections = COLONY.evaporate(connections, Q);
-        NODES = nodes;
-        CONNECTIONS = connections;
-        ANTLIST = antlist;
-        BESTROUTE = bestRoute;
-        STEPS = steps;
+            CONNECTIONS = con;
+            ANTLIST = COLONY.createAnts(ANTS, NODES.get(STARTNODE - 1));// Kolonie
+        // von
+        // Ameisen
+        // erstellen
+        BESTROUTE = new LinkedList<List<Integer>>();
+            STEPS = 0;
     }
+    
+        
+        
+        
+        
+
+        private Simulation(int cities, String path, List<Connection> cons, List<Ant> antlist, List<Node> nodes, List<List<Integer>> bestRoute, int steps) {
+            List<List<Integer>> t = new ArrayList<List<Integer>>();
+            t.add(new ArrayList<Integer>());
+            t.add(new ArrayList<Integer>());
+            t.get(0).add(5);
+            t.get(0).add(2);
+            t.get(0).add(3);
+            t.get(0).add(4);
+            t.get(0).add(6);
+            t.get(1).add(1);
+            t.get(1).add(1);
+            t.get(1).add(1);
+            t.get(1).add(1);
+            t.get(1).add(1);
+
+            ACOImpl.ACOImplInit(t);
+
+            CITIES = cities;
+            TESTDATA = path;
+            COLONY = new ACOImpl();
+            List<Connection> connections = cons;
+            connections = COLONY.evaporate(connections, Q);
+            NODES = nodes;
+            CONNECTIONS = connections;
+            ANTLIST = antlist;
+            BESTROUTE = bestRoute;
+            STEPS = steps;
+        }
 
     /**
      * Laesst dieses Simulationsobjekt die naechsten schritte errechnen und gibt
@@ -133,7 +173,7 @@ public class Simulation {
         if (!BESTROUTE.isEmpty()) {
             bestLength = COLONY.length(BESTROUTE.get(0), connections);
         }
-        
+
         for (int i = 1; (i <= steps) && steps < MAXCYCLES;i++) {
             System.out.printf("Step = %d/%d\n", i,steps);
             for (int j = 0; j < antList.size(); j++) {
@@ -158,7 +198,7 @@ public class Simulation {
                 Connection tempConnection = null;
                 for (Connection element : connections) {
                     if (element.cities.containsAll(ant.visitedNodes.subList(ant.visitedNodes.size() - 2,
-                            ant.visitedNodes.size() - 1))) {
+                                    ant.visitedNodes.size() - 1))) {
                         tempConnection = element;
                     } // if
                 } // for
@@ -169,11 +209,11 @@ public class Simulation {
 
                 // Nodes mit aktualisierten Connections erzeugen
                 nodes = Parser.initNodes(connections);
-                
+
                 // Entladen der Packete wenn moeglich
                 ant.unload(nextNode.ID);
                 ant.load(nextNode.ID);
-                
+
 
                 // bist du fertig ?
                 if (COLONY.tourFinished(ant, nextNode.ID)) {
@@ -195,7 +235,6 @@ public class Simulation {
                     // Besuchte Nodes der Ameise resetten
                     antList.set(j, COLONY.clear(antList.get(j)));
 
-
                 }
 
             } // for
@@ -205,17 +244,17 @@ public class Simulation {
             // Nodes mit aktualisierten Connections erzeugen
             nodes = Parser.initNodes(connections);
         }
-        
+
         return new Simulation(CITIES, TESTDATA, connections, antList, nodes, bestRoute, this.STEPS + steps);
     } // methode
 
-	/**
-    * Optimiert den Weg den die Ameise nimmt
-    * @param temp
-    * @param connections
-    * @return
-    */
-   List<Integer> optimizePath(List<Integer> temp, List<Connection> connections){
+    /**
+     * Optimiert den Weg den die Ameise nimmt
+     * @param temp
+     * @param connections
+     * @return
+     */
+    List<Integer> optimizePath(List<Integer> temp, List<Connection> connections){
         List<Integer> path = temp.subList(0, temp.size());
         Ant ant = new Ant(ACOImpl.packages, ACOImpl.total);
         for(int i = 0; i + 2 < path.size(); i++){
@@ -224,7 +263,7 @@ public class Simulation {
                 path.remove(i + 1);
                 path.remove(i + 1);
                 i--;
-            }
+                    }
         }
 
         for(int i = 0; i + 1 < path.size(); i++){
@@ -249,7 +288,7 @@ public class Simulation {
                 }
             }
             if(ant.load(path.get(i)) || i == path.size() - 1){
-               if(COLONY.length(path.subList(load, unload2 + 1), connections) < COLONY.length(path.subList(unload2, i + 1), connections)){
+                if(COLONY.length(path.subList(load, unload2 + 1), connections) < COLONY.length(path.subList(unload2, i + 1), connections)){
                     List<Integer> p = path.subList(load, unload2 + 1);
                     for(int j = 1; j < p.size(); j++){
                         l.add(p.get(j));

@@ -24,6 +24,11 @@ public class ControlUnit implements Controller {
 	}
 	
 	
+		public ControlUnit(View gui, int anzahlCities, List<Connection> con, List<Node> nod){
+		//uebergabe der GUI!
+		VIEW = gui;
+		SimAnt=new Simulation(anzahlCities,con, nod);
+	}
 	
 	/* (non-Javadoc)
 	 * @see aufgabe3_1.Controller#doSteps(int)
