@@ -9,8 +9,8 @@ import java.util.*;
  * 
  */
 public class ACOImpl implements ACO {
-    private static int total = 0;
-    private static HashMap<Integer, Integer> packages = new HashMap<Integer, Integer>();
+    public static int total = 0;
+    public static HashMap<Integer, Integer> packages = new HashMap<Integer, Integer>();
 
     public static void ACOImplInit(List<List<Integer>> l) {
         if (total == 0) {

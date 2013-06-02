@@ -30,13 +30,13 @@ public class Parser {
             BufferedReader br = new BufferedReader(fr);
             line = br.readLine();
             splitedLine = line.split(";");
-      	 
+         
          
             resultArray = new int[splitedLine.length];
             for(int i = 0; i < resultArray.length; i++) {
                 resultArray[i] = Integer.parseInt(splitedLine[i]);
             } // for
-            	
+                
     
             br.close(); // BufferedReader Stream schliessen
 
@@ -45,7 +45,7 @@ public class Parser {
             System.err.println("csv Datei konnte nicht eingelesen werden!");
             System.exit(0);
         } // catch
-		
+        
         return resultArray;
     }
 
@@ -63,21 +63,22 @@ public class Parser {
         int connectionID = 1;
 
         for (int i = 0; i < array.length-1; i++) {
-        	
+            
             if (array[i] == 0) {
-            	
+                
                 currentCity++;
                 packetList.add(array[i+1]);
                 neighborCity = array[i+2];
                 List<Integer> cities = new ArrayList<Integer>();
                 cities.add(currentCity);
                 cities.add(neighborCity);
-                connectionList.add(new Connection(connectionID, array[i+3], pheromon, cities));
+                connectionList.add(new Connection(connectionID, array[i + 3],
+                        pheromon, cities));
                 connectionID++;
                 i = i+3;            
             } else {
-            	 List<Integer> cities = new ArrayList<Integer>();
-            	neighborCity = array[i];
+                 List<Integer> cities = new ArrayList<Integer>();
+                neighborCity = array[i];
                 cities.add(currentCity);
                 cities.add(neighborCity);
                 connectionList.add(new Connection(connectionID, array[i+1], pheromon, cities));
@@ -116,9 +117,9 @@ public class Parser {
             } // for
             //Der Node die Anzahl der Packets uebergeben(packetList.get(Index connectionSet)
             if(i != 0) {
-            	nodeList.add(new Node(i + 1, connectionList,packetList.get(i-1)));
+                nodeList.add(new Node(i + 1, connectionList,packetList.get(i-1)));
             } else {
-            	nodeList.add(new Node(i + 1, connectionList,0));
+                nodeList.add(new Node(i + 1, connectionList,0));
            }
         } // for
        
@@ -126,13 +127,14 @@ public class Parser {
     }
     
     public static void writeCity(int packetamount,int ... connections) throws IOException{
-    	String input = 0 + ";" + packetamount;
-    	for(int x : connections){
-    		input+= x + ";";
-    	}
-    	 FileWriter fr = new FileWriter("GRSelfMade.csv");
+        String input = 0 + ";" + packetamount;
+        for(int x : connections){
+            input+= x + ";";
+        }
+         FileWriter fr = new FileWriter("GRSelfMade.csv");
          BufferedWriter br = new BufferedWriter(fr);
          br.append(input);
+         br.close();
     }
 
 }

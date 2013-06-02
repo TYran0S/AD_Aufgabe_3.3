@@ -1,11 +1,8 @@
 package GUI;
 
-import java.awt.FlowLayout;
-import java.awt.image.IndexColorModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.javafx.tk.quantum.PopupScene;
 
 import aufgabe3_1.*;
 import javafx.application.Application;
@@ -20,7 +17,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.*;
-import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
 
 public class Karte extends Application implements View {
@@ -46,10 +42,11 @@ public class Karte extends Application implements View {
     List <Integer> yCord;
     List <Integer> cityIds = new ArrayList<Integer>();
     List <Node> nodes = new ArrayList<Node>();
-    Label[] city = new Label[10];  
+    //Label[] city = new Label[10];  
     Label label;
     List<Label> cityLabel = new ArrayList<Label>();  /* labels fuer die selbstgebaute Karte */
-    List <Integer> selectedLabels = new ArrayList<Integer>();  /* labelIds fuer die zu verbinden Labels */
+    List <Integer> selectedLabels = new ArrayList<Integer>();  /* labelIds fuer die zu markierten Labels */
+    //List <Path> pathArrList = null;
     Label lastlabel = null;
     boolean free = true ;
 
@@ -57,7 +54,7 @@ public class Karte extends Application implements View {
     int y1 = 0 ;
     int x2 = 0 ;
     int y2 = 0 ;
-    int cityId1, citiId2, anzahl;
+    int cityId1, cityId2, anzahl;
 
 
     final public static int BEST6 = 1365;
@@ -141,16 +138,16 @@ public class Karte extends Application implements View {
             public void handle(ActionEvent event)
         {
             TextArea info = new TextArea("Info: Folgende Eingaben sind möglich \n" +
-                "doppel Klick linke Maustaste: erstelle Stadt \n" +
-                "einfach Klick linke Maustaste auf Stadt: Stadt makieren -> dann Auswahl der 2. Stadt um eine Verbindung zu erzeugen \n" +
-                "einfach Klick rechte Maustaste auf Stadt: Paketmenge bestimmen ");
+                "doppel Klick : erstelle Stadt \n" +
+                "Klick auf Stadt: Stadt makieren -> dann Auswahl der 2. Stadt um eine Verbindung zu erzeugen \n" +
+                "rechtsKlick auf Stadt: Paketmenge bestimmen ");
             info.setEditable(false);
             info.setPrefRowCount(4);
             //info.setStyle("-fx-text-fill:white;");
             //info.setStyle("-fx-background-color: black;");
             info.setStyle( "-fx-text-fill: white;"+ "-fx-background-color: black;");
             root.setTop(info);
-            root.setCenter(benutzer_pane);	
+            root.setCenter(benutzer_pane);  
             getCoordinatesPerClick();
 
         } 
@@ -203,7 +200,7 @@ public class Karte extends Application implements View {
         }
         benutzer_pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
-                free = true; /*HACK*/
+                //free = true; [>HACK<]
                 int anzahl;
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2 ){
                     int x,y;
@@ -211,7 +208,7 @@ public class Karte extends Application implements View {
                     event.getButton().toString();
                     x = (int) event.getX();
                     y = (int) event.getY();
-                    if (xCord.contains(x) && yCord.contains(y)) {
+                    if (xCord.contains(x) && yCord.contains(y)  ) {
                         System.out.println("Stadt existiert bereits");
                         return;
                     }
@@ -237,13 +234,12 @@ public class Karte extends Application implements View {
                         public void handle(MouseEvent event){
                             /* das momentan angeclickte label */ 
                             label=  ((Label)event.getSource());
+                            int labelId = Integer.valueOf(label.getId());
                             if ( event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1){// if event.getmouseButton == mousebutton.primary && rest
-                                Path path = new Path();
-                                MoveTo moveTo = new MoveTo();
                                 /* TODO durch if ersetzen ueberfluessigen kram raus + new connections*/
                                 switch (selectedLabels.size()) { 
                                     case 0: 
-                                        selectedLabels.add(Integer.valueOf(label.getId()));
+                                        selectedLabels.add(labelId);
                                         label.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"))));
                                         break;
                                     case 1:
@@ -251,47 +247,40 @@ public class Karte extends Application implements View {
                                         if ((cityLabel.get(selectedLabels.get(0)) == label )) {
                                             label.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
                                             selectedLabels.clear();
-                                            //selectedLabels.remove(0);
                                         }
                                         else{
-                                            selectedLabels.add(Integer.valueOf(label.getId()));
+                                            selectedLabels.add(labelId);
+                                            cityId1 = selectedLabels.get(0);
+                                            cityId2 = selectedLabels.get(1);
                                             /*draw lines*/
                                             x1 = (int)label.getLayoutX();
                                             y1 = (int)label.getLayoutY();
-                                            y2 = (int)cityLabel.get(selectedLabels.get(0)).getLayoutY();
-                                            x2 = (int)cityLabel.get(selectedLabels.get(0)).getLayoutX();
+                                            y2 = (int)cityLabel.get(cityId1).getLayoutY();
+                                            x2 = (int)cityLabel.get(cityId1).getLayoutX();
                                             int distance = (int)(Math.sqrt( ((x2 -x1)*(x2 - x1 )) + ( (y2 - y1) * (y2 - y1) ) ));
-                                            moveTo.setX(x1);
-                                            moveTo.setY(y1);
-                                            LineTo lineTo = new LineTo();
-                                            lineTo.setX(x2);
-                                            lineTo.setY(y2);
-                                            /* calculate distance */
-                                            System.out.println("distance = " + distance );
-                                            path.getElements().add(moveTo);
-                                            path.getElements().add(lineTo);
-                                            path.setStrokeWidth(2);
-                                            path.setStroke(Color.BLACK);
-                                            benutzer_pane.getChildren().add(path);
+                                            /* draw line */
+                                            drawSingleLine(x1, y1, x2, y2);
+                                            /* extract ^^ to drawPath(x1, y1, x2, y2) */
                                             List<Integer> tmpCitylist = new ArrayList<Integer>();
-                                            System.out.println(selectedLabels.get(0));
-                                            tmpCitylist.add(selectedLabels.get(0));
-                                            tmpCitylist.add(selectedLabels.get(1));
-                                            Connection connection = new Connection(selectedLabels.get(0), distance, 0, tmpCitylist);
-                                            nodes.get(selectedLabels.get(0)).trails.add(connection);
-                                            nodes.get(selectedLabels.get(1)).trails.add(connection);
-                                            customconnections.add(connection);
-                                            System.out.println("labelId: " + label.getId());
-                                            cityLabel.get(selectedLabels.get(1)).setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"))));
-                                            cityLabel.get(selectedLabels.get(0)).setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
-                                            //selectedLabels.clear();
+                                            //System.out.println(selectedLabels.get(0));
+                                            /* Check ob eine Verbindung vorhanden ist */
+                                            if (!conExists(cityId1, cityId2)) {
+                                                tmpCitylist.add(cityId1);
+                                                tmpCitylist.add(cityId2);
+                                                Connection connection = new Connection(cityId1, distance, 0, tmpCitylist);
+                                                nodes.get(cityId1).trails.add(connection);
+                                                nodes.get(cityId2).trails.add(connection);
+                                                customconnections.add(connection);
+                                            }
+                                            cityLabel.get(cityId2).setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"))));
+                                            cityLabel.get(cityId1).setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
+                                            //selectedLabels.clear(); /*switch too expressions to change selection behaviour */
                                             selectedLabels.remove(0);
-
                                             //System.out.println(customconnections.toString());
                                             System.out.println(nodes.toString());
                                             System.out.println("--------------------------------------------------nodes--------------------------------------------");
                                         }
-                                  break;
+                    break;
                                     default:
                     System.out.println("switch fails");
                                 }
@@ -331,12 +320,12 @@ public class Karte extends Application implements View {
                             lastlabel = label;
 
                         }});
-                    if (free) {
+                    //if (free) {
                         benutzer_pane.getChildren().add(tmp);
                         ArrayList<Connection> trails = new ArrayList<Connection>();
                         Node node = new Node(Integer.valueOf(tmp.getId()), trails,0);
                         nodes.add(node);
-                    }
+                    //}
                     ausgabe_area.setText("Position X = " + x + "Position Y = " + y + "\n");
 
                 }
@@ -554,4 +543,35 @@ public class Karte extends Application implements View {
             karten_pane.getChildren().add(pathlist[j]);
         }
     }
+    private void drawSingleLine( int x1, int y1, int x2, int y2) {
+
+        Path path = new Path();
+        MoveTo moveTo = new MoveTo();
+        moveTo.setX(x1);
+        moveTo.setY(y1);
+        LineTo lineTo = new LineTo();
+        lineTo.setX(x2);
+        lineTo.setY(y2);
+        /* calculate distance */
+        path.getElements().add(moveTo);
+        path.getElements().add(lineTo);
+        path.setStrokeWidth(2);
+        path.setStroke(Color.BLACK);
+        benutzer_pane.getChildren().add(path);
+
+    }
+    boolean conExists(int cityId1, int  cityId2){
+        for (Connection connection : customconnections) {
+            if (connection.cities.contains(cityId1) && connection.cities.contains(cityId2)) {
+                return true; 
+            } 
+        }
+        return false;
+    }
+    public void removeConnection(int index){
+    }
+    public void removeCity(){
+
+    }
+
 }
