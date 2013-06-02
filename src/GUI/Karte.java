@@ -1,10 +1,7 @@
 package GUI;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 
 import aufgabe3_1.*;
@@ -49,13 +46,13 @@ public class Karte extends Application implements View {
     Label label;
     List<Label> cityLabel = new ArrayList<Label>();  /* labels fuer die selbstgebaute Karte */
     List <Integer> selectedLabels = new ArrayList<Integer>();  /* labelIds fuer die zu markierten Labels */
-    //List <Path> pathArrList = null;
+    List <Path> pathArrList = new ArrayList<Path>();
     Label lastlabel = null;
     boolean free = true ;
     String paketAnzeige = "";
     List<List<Integer>> nodePackage = new ArrayList<List<Integer>>() ;
 
-    	
+
 
     int x1 = 0 ;
     int y1 = 0 ;
@@ -176,18 +173,19 @@ public class Karte extends Application implements View {
     private void getCoordinatesPerClick() {
 
 
+        pathlist = new Path[30];
         //liste Nodes
-    	nodePackage.add(new ArrayList<Integer>());
+        nodePackage.add(new ArrayList<Integer>());
         //liste Pakete
-    	nodePackage.add(new ArrayList<Integer>());
-    	if (xCord == null) {
+        nodePackage.add(new ArrayList<Integer>());
+        if (xCord == null) {
             xCord = new ArrayList<Integer>();
             yCord = new ArrayList<Integer>();
         }
         benutzer_pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 //free = true; [>HACK<]
-                int anzahl;
+                //int anzahl;
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2 ){
                     int x,y;
                     //System.out.println(event.getButton().toString());
@@ -215,12 +213,12 @@ public class Karte extends Application implements View {
                     tmp.setId(String.valueOf(index));
                     cityLabel.add( tmp);
                     //city[yCord.indexOf(yCord.get(yCord.size()-1))].setText(String.valueOf(yCord.indexOf(yCord.size()-1)));
-                    tmp.setText(String.valueOf(index));
+                    tmp.setText(String.valueOf(index+1));
                     tmp.setOnMouseClicked(new EventHandler<MouseEvent>(){
                         public void handle(MouseEvent event){
                             /* das momentan angeclickte label */ 
                             label=  ((Label)event.getSource());
-                            int labelId = Integer.valueOf(label.getId());
+                            int labelId = Integer.valueOf(label.getId())+1;
                             if ( event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1){// if event.getmouseButton == mousebutton.primary && rest
                                 /* TODO durch if ersetzen ueberfluessigen kram raus + new connections*/
                                 switch (selectedLabels.size()) { 
@@ -245,7 +243,6 @@ public class Karte extends Application implements View {
                                             x2 = (int)cityLabel.get(cityId1).getLayoutX();
                                             int distance = (int)(Math.sqrt( ((x2 -x1)*(x2 - x1 )) + ( (y2 - y1) * (y2 - y1) ) ));
                                             /* draw line */
-                                            drawSingleLine(x1, y1, x2, y2);
                                             /* extract ^^ to drawPath(x1, y1, x2, y2) */
                                             List<Integer> tmpCitylist = new ArrayList<Integer>();
                                             //System.out.println(selectedLabels.get(0));
@@ -257,6 +254,8 @@ public class Karte extends Application implements View {
                                                 nodes.get(cityId1).trails.add(connection);
                                                 nodes.get(cityId2).trails.add(connection);
                                                 customconnections.add(connection);
+                                                drawSingleLine(x1, y1, x2, y2,customconnections.size() -1);
+
                                             }
                                             cityLabel.get(cityId2).setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"))));
                                             cityLabel.get(cityId1).setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
@@ -309,28 +308,28 @@ public class Karte extends Application implements View {
                             lastlabel = label;
                             if(nodes.size() >= 2 && customconnections.size() >= 1)
                             {
-                            	 Button fineshed = new Button("fertig");
-                                 root.setLeft(fineshed);
-                                 fineshed.setOnAction(new EventHandler<ActionEvent>() {
-                                     @Override
-                                     public void handle(ActionEvent event) {
-                                         scene.getStylesheets().clear();
-                                         startUserCity(customconnections, nodes);
-                                         
-                                     };
-                                 }
-                                 );
+                                Button fineshed = new Button("fertig");
+                                root.setLeft(fineshed);
+                                fineshed.setOnAction(new EventHandler<ActionEvent>() {
+                                    @Override
+                                    public void handle(ActionEvent event) {
+                                        scene.getStylesheets().clear();
+                                        startUserCity(customconnections, nodes);
+
+                                    };
+                                }
+                                );
                             }
 
                         }});
                     //if (free) {
-                        benutzer_pane.getChildren().add(tmp);
-                        ArrayList<Connection> trails = new ArrayList<Connection>();
-                        Node node = new Node(Integer.valueOf(tmp.getId())+1, trails,0);
-                        nodes.add(node);
+                    benutzer_pane.getChildren().add(tmp);
+                    ArrayList<Connection> trails = new ArrayList<Connection>();
+                    Node node = new Node(Integer.valueOf(tmp.getId())+1, trails,0);
+                    nodes.add(node);
                     //}
                     ausgabe_area.setText("Position X = " + x + "Position Y = " + y + "\n");
-                    
+
 
                 }
             }
@@ -380,7 +379,7 @@ public class Karte extends Application implements View {
             };
         }
         );
-        
+
         Button button_User = new Button("Benutzer Stadt");
         button_User.setPrefSize(1024, 200);     
         button_User.setOnAction(new EventHandler<ActionEvent>() {
@@ -389,21 +388,21 @@ public class Karte extends Application implements View {
                 scene.getStylesheets().clear();
                 root.setCenter(benutzer_pane); 
                 TextArea info = new TextArea("Info: Folgende Eingaben sind möglich \n" +
-                        "doppel Klick : erstelle Stadt \n" +
-                        "Klick auf Stadt: Stadt makieren -> dann Auswahl der 2. Stadt um eine Verbindung zu erzeugen \n" +
-                        "rechtsKlick auf Stadt: Paketmenge bestimmen ");
-                    info.setEditable(false);
-                    info.setPrefRowCount(4);
-                    //info.setStyle("-fx-text-fill:white;");
-                    //info.setStyle("-fx-background-color: black;");
-                    info.setStyle( "-fx-text-fill: white;"+ "-fx-background-color: black;");
-                    root.setTop(info);
-                    ausgabe_area = new TextArea("Beste Route");
-                    ausgabe_area.setEditable(false);
-                    ausgabe_area.setPrefRowCount(4);
-                    root.setBottom(ausgabe_area);
-                    getCoordinatesPerClick();
-                                      
+                    "doppel Klick : erstelle Stadt \n" +
+                    "Klick auf Stadt: Stadt makieren -> dann Auswahl der 2. Stadt um eine Verbindung zu erzeugen \n" +
+                    "rechtsKlick auf Stadt: Paketmenge bestimmen ");
+                info.setEditable(false);
+                info.setPrefRowCount(4);
+                //info.setStyle("-fx-text-fill:white;");
+                //info.setStyle("-fx-background-color: black;");
+                info.setStyle( "-fx-text-fill: white;"+ "-fx-background-color: black;");
+                root.setTop(info);
+                ausgabe_area = new TextArea("Beste Route");
+                ausgabe_area.setEditable(false);
+                ausgabe_area.setPrefRowCount(4);
+                root.setBottom(ausgabe_area);
+                getCoordinatesPerClick();
+
             };
         }
         );
@@ -414,19 +413,22 @@ public class Karte extends Application implements View {
         button_pane.add(button_User, 1, 4);
 
     }
-/* TODO: nur zum finden*/
+    /* TODO: nur zum finden*/
     private void startUserCity( List<Connection> connection, List<Node> nod)
     {
-    	
-    	this.con = new ControlUnit(this, nod.size(), connection, nod, nodePackage);
-    	System.out.println("Anzahl = " + anzahl);
-    	System.out.println("Connections = " + connection.size());
-    	System.out.println("Nodes = " + nod.size());
-    	pathlist = new Path[connection.size()];
-    	con.doSteps(1000);
-    	
+
+        this.con = new ControlUnit(this, nod.size(), connection, nod, nodePackage);
+        System.out.println("Anzahl = " + anzahl);
+        System.out.println("Connections = " + connection.size());
+        System.out.println("Nodes = " + nod.size());
+        pathlist = new Path[pathArrList.size()];
+        for (Path path : pathArrList ) {
+           pathlist[pathArrList.indexOf(path)] = path; 
+        }
+        con.doSteps(1000);
+
     }
-    
+
     //Controller erst starten wenn Anzahl der Stï¿½dte ausgewï¿½hlt wurde.
     private void letsGO(int anzahl, String datei){
         this.con = new ControlUnit(this, anzahl, datei);
@@ -593,7 +595,7 @@ public class Karte extends Application implements View {
             karten_pane.getChildren().add(pathlist[j]);
         }
     }
-    private void drawSingleLine( int x1, int y1, int x2, int y2) {
+    private void drawSingleLine( int x1, int y1, int x2, int y2, int conIndex) {
 
         Path path = new Path();
         MoveTo moveTo = new MoveTo();
@@ -608,6 +610,8 @@ public class Karte extends Application implements View {
         path.setStrokeWidth(2);
         path.setStroke(Color.BLACK);
         benutzer_pane.getChildren().add(path);
+        //pathlist[conIndex] = path;
+        pathArrList.add(path);
 
     }
     boolean conExists(int cityId1, int  cityId2){
