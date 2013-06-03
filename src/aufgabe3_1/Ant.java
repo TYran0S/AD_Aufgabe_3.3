@@ -34,7 +34,7 @@ public class Ant {
     public boolean unload(Integer id){
         if (packagesToDeliver.containsKey(id) && capacity - deliverdPackagesInARound >= packagesToDeliver.get(id)){
             
-            
+            System.out.printf("Ant %d unload %d packages at %d , %d/%d/%d\n", ID, packagesToDeliver.get(id), id, deliverdPackagesInARound, capacity, deliverdPackagesInARound + deliverdPackagesTotal);
             deliverdPackagesInARound += packagesToDeliver.get(id);
             packagesToDeliver.remove(id);
 
@@ -58,17 +58,19 @@ public class Ant {
             deliverdPackagesTotal += deliverdPackagesInARound;
             deliverdPackagesInARound = 0;
             loadCount++;
+            System.out.printf("Ant %d load %d packages\n",ID ,deliverdPackagesInARound);
             return true;
-        }else if(pos == start){
+        }else if(pos == start && deliverdPackagesInARound > 0 && !packagesToDeliver.isEmpty()){
             Integer[] g =  packagesToDeliver.values().toArray(new Integer[1]);
             for(int i = 0; i < g.length; i++){
-                if(g[i] + deliverdPackagesInARound < capacity){
+                if(g[i] + deliverdPackagesInARound + 1 < capacity){
                     return false;
                 }
             }
             deliverdPackagesTotal += deliverdPackagesInARound;
             deliverdPackagesInARound = 0;
             loadCount++;
+            System.out.printf("Ant %d load %d packages\n",ID , deliverdPackagesInARound);
             return true;
         }
         return false;

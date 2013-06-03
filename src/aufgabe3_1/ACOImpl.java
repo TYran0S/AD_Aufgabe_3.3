@@ -15,8 +15,10 @@ public class ACOImpl implements ACO {
     public static void ACOImplInit(List<List<Integer>> l) {
         if (total == 0) {
             for (int i = 0; i < l.get(0).size(); i++) {
-                total += l.get(1).get(i);
-                packages.put(l.get(0).get(i), l.get(1).get(0));
+                if(l.get(1).get(i) != 0){
+                    total += l.get(1).get(i);
+                    packages.put(l.get(0).get(i), l.get(1).get(0));
+                }
             }
         }
     }
