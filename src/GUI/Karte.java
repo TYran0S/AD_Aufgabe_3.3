@@ -32,7 +32,6 @@ public class Karte extends Application implements View {
     GridPane bottomRigth;
     Pane karten_pane;
     Pane benutzer_pane;
-    // ScrollPane scrpane;
     TextArea ausgabe_area;
     TextField eingabe_text_feld;
     TextField ausgabe_text_feld;
@@ -72,7 +71,6 @@ public class Karte extends Application implements View {
     int cityId1, cityId2, anzahl;
 
     final public static int BEST6 = 1365;
-    // final public static int BEST10 = 2255;
     final public static int BEST10 = 15;
     final public static int BEST20 = 4205;
 
@@ -97,22 +95,12 @@ public class Karte extends Application implements View {
         benutzer_pane = new Pane();
         bottom = new BorderPane();
         bottomRigth = new GridPane();
-        // scrpane = new ScrollPane();
         root.setCenter(button_pane);
-        // root.setCenter(scrpane);
-        // scrpane.setContent(karten_pane);
-        // Buttons erstellen
         makeChoiceButtons();
 
         scene = new Scene(root, 1024, 800);
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
-
-        // Hintergrundbild
-        // scene.getStylesheets()
-        // .add(Karte.class.getResource("/resource/Login.css")
-        // .toExternalForm());
-
         primaryStage.show();
     }
 
@@ -152,10 +140,6 @@ public class Karte extends Application implements View {
         ausgabe_area.setMinHeight(20);
         root.setBottom(bottom);
         bottom.setLeft(ausgabe_area);
-        // ausgabe_text_feld = new TextField("Beste Route");
-        // ausgabe_text_feld.setEditable(false);
-        // root.setBottom(ausgabe_text_feld);
-
         eingabe_text_feld = new TextField("Anzahl Cycles");
         eingabe_text_feld.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
@@ -194,12 +178,9 @@ public class Karte extends Application implements View {
         }
         benutzer_pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
-                // free = true; [>HACK<]
-                // int anzahl;
+
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     int x, y;
-                    // System.out.println(event.getButton().toString());
-                    //event.getButton().toString();
                     x = (int) event.getX();
                     y = (int) event.getY();
                     if (xCord.contains(x) && yCord.contains(y)) {
@@ -209,8 +190,6 @@ public class Karte extends Application implements View {
                     xCord.add(x);
                     yCord.add(y);
                     handleDoubleClick(x, y);
-                    // System.out.println("click");
-                    // int index = yCord.indexOf(yCord.get(yCord.size()-1));
                 }
             }
         });
@@ -219,14 +198,12 @@ public class Karte extends Application implements View {
     // Buttons fuer die Auswahl der Anzahl
     private void makeChoiceButtons() {
         Button button_6 = new Button("6 Staedte");
-        // button_pane = new GridPane();
         button_6.setPrefSize(1024, 200);
         button_6.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/6staedte.png"))));
         button_6.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 scene.getStylesheets().clear();
-                // root.setTop(button_pane);
                 makeButtons();
                 letsGO(6, "GR6.csv");
             };
@@ -269,8 +246,6 @@ public class Karte extends Application implements View {
                     + "rechtsKlick auf Stadt: Paketmenge bestimmen ");
                 info.setEditable(false);
                 info.setPrefRowCount(4);
-                // info.setStyle("-fx-text-fill:white;");
-                // info.setStyle("-fx-background-color: black;");
                 info.setStyle("-fx-text-fill: white;" + "-fx-background-color: black;");
                 root.setTop(info);
                 ausgabe_area = new TextArea("Beste Route");
@@ -458,10 +433,6 @@ public class Karte extends Application implements View {
         for (int j = 0; j < pathlist.length; j++) {
             pathlist[j] = new Path();
             MoveTo moveTo = new MoveTo();
-            // Gehe alle Connections durch und hole dir vo der
-            // jeweiligen Connection die Stï¿½dte
-            // Dann holt er sich fuer MoveTo von der Stadt 0 die X und Y
-            // koordinte und dann von Stadt 1 fuer LineTo
             moveTo.setX(x_koordinaten[connections.get(j).cities.get(0) - 1]);
             moveTo.setY(y_koordinaten[connections.get(j).cities.get(0) - 1]);
 
