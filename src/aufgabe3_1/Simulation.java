@@ -327,7 +327,9 @@ public class Simulation {
             if (ant.load(path.get(i)) || i == path.size() - 1) {
                 tours.add(path.subList(j, i + 1));
                 j = i;
+                
             }
+            ant.lkwID = tours.size()+1;
         }
         System.out.printf("Finish calulating " + tours.size());
         return tours;
