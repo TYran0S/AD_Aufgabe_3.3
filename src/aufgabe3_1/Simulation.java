@@ -329,7 +329,7 @@ public class Simulation {
                 j = i;
             }
         }
-        System.out.printf("Finish calulating\n");
+        System.out.printf("Finish calulating " + tours.size());
         return tours;
     }
 }

@@ -42,16 +42,16 @@ public class ACOImpl implements ACO {
 
         // Durchlaufe alle Nodes
         for (int i = 1; i < visitedNodes.size(); i++) {
-
+        	int visitedCity1 = visitedNodes.get(i);
+			int visitedCity2 = visitedNodes.get(i - 1);
             // Durchlaufe fuer jeweiligen Node alle Connections
             for (int j = 0; j < connectionList.size(); j++) {
-
                 // Die Connection suchen, die zwei besuchte Nodes miteinander
                 // verbindet
-                if ((visitedNodes.get(i) == connectionList.get(j).cities.get(0) && visitedNodes.get(i - 1) == connectionList.get(j).cities.get(1))
-                        || (visitedNodes.get(i) == connectionList.get(j).cities.get(1) && visitedNodes.get(i - 1) == connectionList.get(j).cities
-                                .get(0))) {
-
+				Integer ConCity1 = connectionList.get(j).cities.get(0);
+				Integer conCity2 = connectionList.get(j).cities.get(1);
+				if ((visitedCity1 == ConCity1 && visitedCity2 == conCity2)
+                        || (visitedCity1 == conCity2 && visitedCity2 == ConCity1)) {
                     length += connectionList.get(j).length;
                     // System.out.println("Visited" + connectionList.get(j).ID);
                 } // if
@@ -63,24 +63,24 @@ public class ACOImpl implements ACO {
 
     public List<Integer> visitedStreets(List<Integer> visitedNodes, List<Connection> connectionList) {
         List<Integer> visitedConnections = new ArrayList<Integer>();
-
+  //      
         // Durchlaufe alle Nodes
         for (int i = 1; i < visitedNodes.size(); i++) {
-
+        	int visitedCity1 = visitedNodes.get(i);
+			int visitedCity2 = visitedNodes.get(i - 1);
             // Durchlaufe fuer jeweiligen Node alle Connections
             for (int j = 0; j < connectionList.size(); j++) {
-
                 // Die Connection suchen, die zwei besuchte Nodes miteinander
                 // verbindet
-                if ((visitedNodes.get(i) == connectionList.get(j).cities.get(0) && visitedNodes.get(i - 1) == connectionList.get(j).cities.get(1))
-                        || (visitedNodes.get(i) == connectionList.get(j).cities.get(1) && visitedNodes.get(i - 1) == connectionList.get(j).cities
-                                .get(0))) {
-                    visitedConnections.add(connectionList.get(j).ID);
+				Integer ConCity1 = connectionList.get(j).cities.get(0);
+				Integer conCity2 = connectionList.get(j).cities.get(1);
+				if ((visitedCity1 == ConCity1 && visitedCity2 == conCity2)
+                        || (visitedCity1 == conCity2 && visitedCity2 == ConCity1)) {
+					visitedConnections.add(connectionList.get(j).ID);
                     // System.out.println("Visited" + connectionList.get(j).ID);
                 } // if
             } // for
         } // for
-
         return visitedConnections;
     }
 
@@ -206,9 +206,10 @@ public class ACOImpl implements ACO {
 
         if (ConnectionAnzahl == 0) {
             for (int i = 0; i < tmp.size(); i++) {
-                nenner += Math.pow(tmp.get(i).pheromon, alpha) * Math.pow(1.0 / tmp.get(i).length, beta);
-                double zaehler = Math.pow(tmp.get(i).pheromon, alpha) * Math.pow(1.0 / tmp.get(i).length, beta);
-                probabilities.put(tmp.get(i), zaehler / nenner);
+                Connection connection = tmp.get(i);
+				nenner += Math.pow(connection.pheromon, alpha) * Math.pow(1.0 / connection.length, beta);
+                double zaehler = Math.pow(connection.pheromon, alpha) * Math.pow(1.0 / connection.length, beta);
+                probabilities.put(connection, zaehler / nenner);
             }
         }
 

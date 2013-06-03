@@ -151,7 +151,7 @@ public class Karte extends Application implements View {
         root.setBottom(bottom);
         bottom.add(ausgabe_area, 1, 1);
         // ausgabe_text_feld = new TextField("Beste Route");
-        // ausgabe_text_feld.setMinHeight(10);
+         ausgabe_area.setMinHeight(10);
         // ausgabe_text_feld.setEditable(false);
         // root.setBottom(ausgabe_text_feld);
 
