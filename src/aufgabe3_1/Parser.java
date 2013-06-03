@@ -101,6 +101,35 @@ public class Parser {
         return connectionList;
     }
 
+    public static  List<List<Integer>> initPackages(int[] array) {
+    	
+    	List<List<Integer>> packageMap = new ArrayList<List<Integer>>();
+    	packageMap.add(new ArrayList<Integer>());
+        packageMap.add(new ArrayList<Integer>());
+    	int currentCity = 1;
+          
+    	for (int i = 1; i < array.length-1; i++) {
+            
+            if (array[i] == 0) {
+                
+                currentCity++;
+                packageMap.get(0).add(currentCity);
+                if(array[i+1] == -1){
+                	packageMap.get(1).add(0);
+                } else {
+                packageMap.get(1).add(array[i+1]);
+                }
+
+                i = i+3;            
+            }else{
+            	i++;
+            }
+    	}
+    	return packageMap;
+    	
+    }
+    
+    
     /**
      * Erzeugt eine ArrayListe aus Nodes
      * 
