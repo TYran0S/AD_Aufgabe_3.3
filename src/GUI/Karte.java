@@ -79,6 +79,7 @@ public class Karte extends Application implements View {
     final int DEFAULT_CYCLES = 1000;
 
     Image city_image = new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"));
+    Image sel_city_image = new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"));
 
     public static void main(String[] args) {
         launch();
@@ -148,10 +149,10 @@ public class Karte extends Application implements View {
         ausgabe_area = new TextArea("Beste Route");
         ausgabe_area.setEditable(false);
         ausgabe_area.setPrefRowCount(4);
+        ausgabe_area.setMinHeight(20);
         root.setBottom(bottom);
         bottom.add(ausgabe_area, 1, 1);
         // ausgabe_text_feld = new TextField("Beste Route");
-         ausgabe_area.setMinHeight(10);
         // ausgabe_text_feld.setEditable(false);
         // root.setBottom(ausgabe_text_feld);
 
@@ -181,7 +182,7 @@ public class Karte extends Application implements View {
     }
 
     private void getCoordinatesPerClick() {
-    	bottom.add(bottomRigth, 2, 1);
+        bottom.add(bottomRigth, 2, 1);
         pathlist = new Path[30];
         // liste Nodes
         nodePackage.add(new ArrayList<Integer>());
@@ -198,7 +199,7 @@ public class Karte extends Application implements View {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     int x, y;
                     // System.out.println(event.getButton().toString());
-                    event.getButton().toString();
+                    //event.getButton().toString();
                     x = (int) event.getX();
                     y = (int) event.getY();
                     if (xCord.contains(x) && yCord.contains(y)) {
@@ -207,166 +208,9 @@ public class Karte extends Application implements View {
                     }
                     xCord.add(x);
                     yCord.add(y);
+                    handleDoubleClick(x, y);
                     // System.out.println("click");
                     // int index = yCord.indexOf(yCord.get(yCord.size()-1));
-                    int index = yCord.indexOf(y);
-                    int length = index + 1;
-                    if (length >= 10) {
-                        System.out.println("max 10 cities");
-                        return;
-                    }
-                    cityIds.add(index);
-                    Label tmp = new Label("" + (index), new ImageView(city_image));
-                    tmp.setLayoutX(x);
-                    tmp.setLayoutY(y);
-                    tmp.setId(String.valueOf(index));
-                    cityLabel.add(tmp);
-                    // city[yCord.indexOf(yCord.get(yCord.size()-1))].setText(String.valueOf(yCord.indexOf(yCord.size()-1)));
-                    tmp.setText(String.valueOf(index + 1));
-                    tmp.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                        public void handle(MouseEvent event) {
-                            /* das momentan angeclickte label */
-                            label = ((Label) event.getSource());
-                            int labelId = Integer.valueOf(label.getId());
-                            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {// if
-                                // event.getmouseButton
-                                // ==
-                                // mousebutton.primary
-                                // &&
-                                // rest
-                                /*
-                                 * TODO durch if ersetzen ueberfluessigen kram
-                                 * raus + new connections
-                                 */
-                                switch (selectedLabels.size()) {
-                                    case 0:
-                                        selectedLabels.add(labelId);
-                                        label.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"))));
-                                        break;
-                                    case 1:
-                                        /* toggle already selected */
-                                        if ((cityLabel.get(selectedLabels.get(0)) == label )) {
-                                            label.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
-                                            selectedLabels.clear();
-                                        }
-                                        else{
-                                            selectedLabels.add(labelId);
-                                            cityId1 = selectedLabels.get(0);
-                                            cityId2 = selectedLabels.get(1);
-                                            /*draw lines*/
-                                            x1 = (int)label.getLayoutX();
-                                            y1 = (int)label.getLayoutY();
-                                            y2 = (int)cityLabel.get(cityId1).getLayoutY();
-                                            x2 = (int)cityLabel.get(cityId1).getLayoutX();
-                                            int distance = (int)(Math.sqrt( ((x2 -x1)*(x2 - x1 )) + ( (y2 - y1) * (y2 - y1) ) ));
-                                            /* draw line */
-                                            /* extract ^^ to drawPath(x1, y1, x2, y2) */
-                                            List<Integer> tmpCitylist = new ArrayList<Integer>();
-                                            //System.out.println(selectedLabels.get(0));
-                                            /* Check ob eine Verbindung vorhanden ist */
-                                            if (!conExists(cityId1+1, cityId2+1)) {
-                                                connectionID++;
-                                                tmpCitylist.add(cityId1+1);
-                                                tmpCitylist.add(cityId2+1);
-                                                Connection connection = new Connection(connectionID, distance, 1, tmpCitylist);
-                                                nodes.get(cityId1).trails.add(connection);
-                                                nodes.get(cityId2).trails.add(connection);
-                                                customconnections.add(connection);
-                                                drawSingleLine(x1, y1, x2, y2,customconnections.size() -1);
-
-                                            }
-                                            cityLabel.get(cityId2).setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"))));
-                                            cityLabel.get(cityId1).setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
-                                            //selectedLabels.clear(); /*switch too expressions to change selection behaviour */
-                                            selectedLabels.remove(0);
-                                            //System.out.println(customconnections.toString());
-                                            System.out.println(nodes.toString());
-                                            System.out.println("--------------------------------------------------nodes--------------------------------------------");
-                                        }
-                                        break;
-                                    default :
-                                        System.out.println("switch fails");
-                                        break;
-                                }
-
-                            } else if (event.getButton() == MouseButton.SECONDARY && event.getClickCount() == 1
-                                       && Integer.parseInt(((Label) event.getSource()).getId()) != 0 
-                                       && nodes.get(Integer.parseInt((label.getId()))).amountOfPackets == 0) {
-                                final GridPane testPane = new GridPane();
-                                pakete = new TextField("0");
-                                Label text_info1 = new Label("Paketanzahl:");
-                                Button eingabe_anzahl = new Button("weiter");
-                                /*
-                                 * die Reihenfolge hier ist wichtig für TAB
-                                 * durch die elemente
-                                 */
-                                testPane.add(pakete, 2, 1);
-                                testPane.add(eingabe_anzahl, 2, 2);
-                                testPane.add(text_info1, 1, 1);
-                                root.setRight(testPane);
-                                // root.setTop(testPane);
-                                pakete.setFocusTraversable(true);
-                                pakete.requestFocus();
-                                eingabe_anzahl.setOnAction(new EventHandler<ActionEvent>() {
-                                    @Override
-                                    public void handle(ActionEvent event) {
-
-                                    		try {
-                                    			nodes.get(Integer.parseInt((label.getId()))).setAmountOfPackets(Integer.parseInt(pakete.getText()));
-                                    		} catch (NumberFormatException e) {
-                                    			pakete.setText("Int-Werte > 0 eingeben");
-                                    		}
-                                    		nodePackage.get(0).add(Integer.parseInt((label.getId())));
-                                    		nodePackage.get(1).add(Integer.parseInt(pakete.getText()));
-                                    		root.setRight(null);
-                                        
-                                    		paketAnzeige += ("Node: " + (Integer.parseInt((label.getId()))+1) + "Pakete: "
-                                    				+ Integer.parseInt(pakete.getText()) + "\n");
-                                    		ausgabe_area.setText(paketAnzeige);
-                                    }
-                                });
-
-                                System.out.println(nodes.toString());
-                                System.out
-                                    .println("--------------------------------------------------nodes--------------------------------------------");
-
-                                    }
-                            lastlabel = label;
-                            
-                            
-                            
-                            if (nodes.size() >= 2 && customconnections.size() >= 1) {
-                                final Button fineshed = new Button("Starte Algo");
-                                bottomRigth.add(fineshed, 1, 3);
-                                fineshed.setOnAction(new EventHandler<ActionEvent>() {
-                                    @Override
-                                    public void handle(ActionEvent event) {
-                                    	capa = Integer.parseInt(capaCity.getText());
-                                    	if(capa != 0)
-                                    	{
-                                    		scene.getStylesheets().clear();
-                                    		startUserCity(customconnections, nodes);
-                                    	}
-
-                                    };
-                                });
-                            }
-                            Label capaText = new Label("Max Kapazität:");
-                            capaCity = new TextField("0");
-                            bottomRigth.add(capaText, 1, 1);
-                            bottomRigth.add(capaCity, 1, 2);
-                            
-
-                        }
-                    });
-                    // if (free) {
-                    benutzer_pane.getChildren().add(tmp);
-                    ArrayList<Connection> trails = new ArrayList<Connection>();
-                    Node node = new Node(Integer.valueOf(tmp.getId()) + 1, trails, 0);
-                    nodes.add(node);
-                    // }
-                    ausgabe_area.setText("Position X = " + x + "Position Y = " + y + "\n");
-
                 }
             }
         });
@@ -432,6 +276,7 @@ public class Karte extends Application implements View {
                 ausgabe_area = new TextArea("Beste Route");
                 ausgabe_area.setEditable(false);
                 ausgabe_area.setPrefRowCount(6);
+                ausgabe_area.setMinHeight(20);
                 root.setBottom(bottom);
                 bottom.add(ausgabe_area, 1, 1);
                 getCoordinatesPerClick();
@@ -504,7 +349,7 @@ public class Karte extends Application implements View {
             }
         }
         ausgabe += Ant.output;
-        
+
         ausgabe_area.setText(paketAnzeige + ausgabe);
 
         return false;
@@ -667,5 +512,161 @@ public class Karte extends Application implements View {
     public void removeCity() {
 
     }
+    public void handleDoubleClick( int x, int y){
 
+        int index = yCord.indexOf(y);
+        int length = index + 1;
+        if (length >= 10) {
+            System.out.println("max 10 cities");
+            return;
+        }
+        cityIds.add(index);
+        Label tmp = new Label("" + (index), new ImageView(city_image));
+        tmp.setLayoutX(x);
+        tmp.setLayoutY(y);
+        tmp.setId(String.valueOf(index));
+        cityLabel.add(tmp);
+        tmp.setText(String.valueOf(index + 1));
+        tmp.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                /* das momentan angeclickte label */
+                label = ((Label) event.getSource());
+                int labelId = Integer.valueOf(label.getId());
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {// if
+                    handleSingleClick(selectedLabels, labelId);
+                } else if (event.getButton() == MouseButton.SECONDARY && event.getClickCount() == 1
+                    && Integer.parseInt(((Label) event.getSource()).getId()) != 0 
+                    && nodes.get(Integer.parseInt((label.getId()))).amountOfPackets == 0) {
+                    handleRightClick();
+                    }
+                lastlabel = label;
+
+                if (nodes.size() >= 2 && customconnections.size() >= 1) {
+                    final Button fineshed = new Button("Starte Algo");
+                    bottomRigth.add(fineshed, 1, 3);
+                    fineshed.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            capa = Integer.parseInt(capaCity.getText());
+                            if(capa != 0)
+                    {
+                        scene.getStylesheets().clear();
+                        startUserCity(customconnections, nodes);
+                    }
+
+                    };
+                    });
+                }
+                Label capaText = new Label("Max Kapazität:");
+                capaCity = new TextField("0");
+                bottomRigth.add(capaText, 1, 1);
+                bottomRigth.add(capaCity, 1, 2);
+
+
+            }
+        });
+        // if (free) {
+        benutzer_pane.getChildren().add(tmp);
+        ArrayList<Connection> trails = new ArrayList<Connection>();
+        Node node = new Node(Integer.valueOf(tmp.getId()) + 1, trails, 0);
+        nodes.add(node);
+        // }
+        ausgabe_area.setText("Position X = " + x + "Position Y = " + y + "\n");
+
+    }
+
+    public void handleSingleClick( List<Integer> selectedLabels, int labelId){
+
+        switch (selectedLabels.size()) {
+            case 0:
+                selectedLabels.add(labelId);
+                label.setGraphic(new ImageView(sel_city_image));
+                break;
+            case 1:
+                /* toggle already selected */
+                if ((cityLabel.get(selectedLabels.get(0)) == label )) {
+                    label.setGraphic(new ImageView(city_image));
+                    selectedLabels.clear();
+                }
+                else{
+                    selectedLabels.add(labelId);
+                    cityId1 = selectedLabels.get(0);
+                    cityId2 = selectedLabels.get(1);
+                    /*draw lines*/
+                    x1 = (int)label.getLayoutX();
+                    y1 = (int)label.getLayoutY();
+                    y2 = (int)cityLabel.get(cityId1).getLayoutY();
+                    x2 = (int)cityLabel.get(cityId1).getLayoutX();
+                    int distance = (int)(Math.sqrt( ((x2 -x1)*(x2 - x1 )) + ( (y2 - y1) * (y2 - y1) ) ));
+                    /* draw line */
+                    /* extract ^^ to drawPath(x1, y1, x2, y2) */
+                    List<Integer> tmpCitylist = new ArrayList<Integer>();
+                    //System.out.println(selectedLabels.get(0));
+                    /* Check ob eine Verbindung vorhanden ist */
+                    if (!conExists(cityId1+1, cityId2+1)) {
+                        connectionID++;
+                        tmpCitylist.add(cityId1+1);
+                        tmpCitylist.add(cityId2+1);
+                        Connection connection = new Connection(connectionID, distance, 1, tmpCitylist);
+                        nodes.get(cityId1).trails.add(connection);
+                        nodes.get(cityId2).trails.add(connection);
+                        customconnections.add(connection);
+                        drawSingleLine(x1, y1, x2, y2,customconnections.size() -1);
+
+                    }
+                    label.setGraphic(new ImageView(sel_city_image));
+                    lastlabel.setGraphic(new ImageView(city_image));
+                    //selectedLabels.clear(); /*switch too expressions to change selection behaviour */
+                    selectedLabels.remove(0);
+                    //System.out.println(customconnections.toString());
+                    System.out.println(nodes.toString());
+                    System.out.println("--------------------------------------------------nodes--------------------------------------------");
+                }
+                break;
+            default :
+                System.out.println("switch fails");
+                break;
+        }
+
+    }
+    public void handleRightClick(){
+        final GridPane testPane = new GridPane();
+        pakete = new TextField("0");
+        Label text_info1 = new Label("Paketanzahl:");
+        Button eingabe_anzahl = new Button("weiter");
+        /*
+         * die Reihenfolge hier ist wichtig für TAB
+         * durch die elemente
+         */
+        testPane.add(pakete, 2, 1);
+        testPane.add(eingabe_anzahl, 2, 2);
+        testPane.add(text_info1, 1, 1);
+        root.setRight(testPane);
+        // root.setTop(testPane);
+        pakete.setFocusTraversable(true);
+        pakete.requestFocus();
+        eingabe_anzahl.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                try {
+                    nodes.get(Integer.parseInt((label.getId()))).setAmountOfPackets(Integer.parseInt(pakete.getText()));
+                } catch (NumberFormatException e) {
+                    pakete.setText("Int-Werte > 0 eingeben");
+                }
+                nodePackage.get(0).add(Integer.parseInt((label.getId())));
+                nodePackage.get(1).add(Integer.parseInt(pakete.getText()));
+                root.setRight(null);
+
+                paketAnzeige += ("Node: " + (Integer.parseInt((label.getId()))+1) + "Pakete: "
+                    + Integer.parseInt(pakete.getText()) + "\n");
+                ausgabe_area.setText(paketAnzeige);
+            }
+        });
+
+        System.out.println(nodes.toString());
+        System.out
+            .println("--------------------------------------------------nodes--------------------------------------------");
+
+    }
 }

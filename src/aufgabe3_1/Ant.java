@@ -40,7 +40,7 @@ public class Ant {
             
             if(tourFin)
             {
-            	output += String.format("Ant %d unload %d packages at %d , %d/%d/%d\n", ID, packagesToDeliver.get(id), id, deliverdPackagesInARound, capacity, deliverdPackagesInARound + deliverdPackagesTotal);
+            	output += String.format("Ant %d unload %d packages at %d , %d/%d/%d\n", ID, packagesToDeliver.get(id), id+1, deliverdPackagesInARound, capacity, deliverdPackagesInARound + deliverdPackagesTotal);
             }
         	System.out.printf("Ant %d unload %d packages at %d , %d/%d/%d\n", ID, packagesToDeliver.get(id), id, deliverdPackagesInARound, capacity, deliverdPackagesInARound + deliverdPackagesTotal);
             deliverdPackagesInARound += packagesToDeliver.get(id);
