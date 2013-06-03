@@ -351,6 +351,7 @@ public class Karte extends Application implements View {
         ausgabe += Ant.output;
 
         ausgabe_area.setText(paketAnzeige + ausgabe);
+        bottomRigth.setVisible(false);
 
         return false;
     }
@@ -610,6 +611,7 @@ public class Karte extends Application implements View {
                         Connection connection = new Connection(connectionID, distance, 1, tmpCitylist);
                         nodes.get(cityId1).trails.add(connection);
                         nodes.get(cityId2).trails.add(connection);
+                        connection = new Connection(connectionID, distance, 1, tmpCitylist);
                         customconnections.add(connection);
                         drawSingleLine(x1, y1, x2, y2,customconnections.size() -1);
 
@@ -654,7 +656,7 @@ public class Karte extends Application implements View {
                 } catch (NumberFormatException e) {
                     pakete.setText("Int-Werte > 0 eingeben");
                 }
-                nodePackage.get(0).add(Integer.parseInt((label.getId())));
+                nodePackage.get(0).add(Integer.parseInt((label.getId()))+1);
                 nodePackage.get(1).add(Integer.parseInt(pakete.getText()));
                 root.setRight(null);
 
