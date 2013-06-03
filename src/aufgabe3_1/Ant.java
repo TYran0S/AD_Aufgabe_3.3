@@ -2,6 +2,8 @@ package aufgabe3_1;
 
 import java.util.*;
 
+import com.sun.javafx.binding.StringFormatter;
+
 public class Ant {
     public final static int start = Simulation.STARTNODE;
     
@@ -14,7 +16,9 @@ public class Ant {
     public HashMap<Integer,Integer> packagesToDeliver;
     public int deliverdPackagesInARound = 0;
     public int deliverdPackagesTotal = 0;
+    public boolean tourFin = false;
 	    public int loadCount = 0;
+	    public static String output = ""; 
     
     @SuppressWarnings("unchecked")
     public Ant(HashMap<Integer,Integer> h, int t) {
@@ -34,7 +38,11 @@ public class Ant {
     public boolean unload(Integer id){
         if (packagesToDeliver.containsKey(id) && capacity - deliverdPackagesInARound >= packagesToDeliver.get(id)){
             
-            System.out.printf("Ant %d unload %d packages at %d , %d/%d/%d\n", ID, packagesToDeliver.get(id), id, deliverdPackagesInARound, capacity, deliverdPackagesInARound + deliverdPackagesTotal);
+            if(tourFin)
+            {
+            	output += String.format("Ant %d unload %d packages at %d , %d/%d/%d\n", ID, packagesToDeliver.get(id), id, deliverdPackagesInARound, capacity, deliverdPackagesInARound + deliverdPackagesTotal);
+            }
+        	System.out.printf("Ant %d unload %d packages at %d , %d/%d/%d\n", ID, packagesToDeliver.get(id), id, deliverdPackagesInARound, capacity, deliverdPackagesInARound + deliverdPackagesTotal);
             deliverdPackagesInARound += packagesToDeliver.get(id);
             packagesToDeliver.remove(id);
 

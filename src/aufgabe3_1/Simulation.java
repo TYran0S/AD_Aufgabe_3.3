@@ -317,8 +317,10 @@ public class Simulation {
      */
     ArrayList<List<Integer>> calculateTours(List<Integer> path) {
         System.out.printf("calculateTours\n");
+        
         ArrayList<List<Integer>> tours = new ArrayList<List<Integer>>();
         Ant ant = new Ant(ACOImpl.packages, ACOImpl.total);
+        ant.tourFin = true;
         int j = 0;
         for (int i = 0; i < path.size(); i++) {
             ant.unload(path.get(i));
