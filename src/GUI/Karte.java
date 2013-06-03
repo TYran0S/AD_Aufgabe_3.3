@@ -58,6 +58,8 @@ public class Karte extends Application implements View {
     boolean free = true;
     String paketAnzeige = "";
     List<List<Integer>> nodePackage = new ArrayList<List<Integer>>();
+    int connectionID = 0;
+
 
     int x1 = 0;
     int y1 = 0;
@@ -220,72 +222,64 @@ public class Karte extends Application implements View {
                             label = ((Label) event.getSource());
                             int labelId = Integer.valueOf(label.getId());
                             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {// if
-                                                                                                         // event.getmouseButton
-                                                                                                         // ==
-                                                                                                         // mousebutton.primary
-                                                                                                         // &&
-                                                                                                         // rest
+                                // event.getmouseButton
+                                // ==
+                                // mousebutton.primary
+                                // &&
+                                // rest
                                 /*
                                  * TODO durch if ersetzen ueberfluessigen kram
                                  * raus + new connections
                                  */
                                 switch (selectedLabels.size()) {
-                                case 0:
-                                    selectedLabels.add(labelId);
-                                    label.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"))));
-                                    break;
-                                case 1:
-                                    /* toggle already selected */
-                                    if ((cityLabel.get(selectedLabels.get(0)) == label)) {
-                                        label.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
-                                        selectedLabels.clear();
-                                    } else {
+                                    case 0:
                                         selectedLabels.add(labelId);
-                                        cityId1 = selectedLabels.get(0);
-                                        cityId2 = selectedLabels.get(1);
-                                        /* draw lines */
-                                        x1 = (int) label.getLayoutX();
-                                        y1 = (int) label.getLayoutY();
-                                        y2 = (int) cityLabel.get(cityId1).getLayoutY();
-                                        x2 = (int) cityLabel.get(cityId1).getLayoutX();
-                                        int distance = (int) (Math.sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1))));
-                                        /* draw line */
-                                        /*
-                                         * extract ^^ to drawPath(x1, y1, x2,
-                                         * y2)
-                                         */
-                                        List<Integer> tmpCitylist = new ArrayList<Integer>();
-                                        // System.out.println(selectedLabels.get(0));
-                                        /*
-                                         * Check ob eine Verbindung vorhanden
-                                         * ist
-                                         */
-                                        if (!conExists(cityId1 + 1, cityId2 + 1)) {
-                                            tmpCitylist.add(cityId1 + 1);
-                                            tmpCitylist.add(cityId2 + 1);
-                                            Connection connection = new Connection(cityId1 + 1, distance, 1, tmpCitylist);
-                                            nodes.get(cityId1).trails.add(connection);
-                                            nodes.get(cityId2).trails.add(connection);
-                                            customconnections.add(connection);
-                                            drawSingleLine(x1, y1, x2, y2, customconnections.size() - 1);
-
+                                        label.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"))));
+                                        break;
+                                    case 1:
+                                        /* toggle already selected */
+                                        if ((cityLabel.get(selectedLabels.get(0)) == label )) {
+                                            label.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
+                                            selectedLabels.clear();
                                         }
-                                        cityLabel.get(cityId2).setGraphic(
-                                                new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"))));
-                                        cityLabel.get(cityId1).setGraphic(
-                                                new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
-                                        // selectedLabels.clear(); /*switch too
-                                        // expressions to change selection
-                                        // behaviour */
-                                        selectedLabels.remove(0);
-                                        // System.out.println(customconnections.toString());
-                                        System.out.println(nodes.toString());
-                                        System.out
-                                                .println("--------------------------------------------------nodes--------------------------------------------");
-                                    }
-                                    break;
-                                default:
-                                    System.out.println("switch fails");
+                                        else{
+                                            selectedLabels.add(labelId);
+                                            cityId1 = selectedLabels.get(0);
+                                            cityId2 = selectedLabels.get(1);
+                                            /*draw lines*/
+                                            x1 = (int)label.getLayoutX();
+                                            y1 = (int)label.getLayoutY();
+                                            y2 = (int)cityLabel.get(cityId1).getLayoutY();
+                                            x2 = (int)cityLabel.get(cityId1).getLayoutX();
+                                            int distance = (int)(Math.sqrt( ((x2 -x1)*(x2 - x1 )) + ( (y2 - y1) * (y2 - y1) ) ));
+                                            /* draw line */
+                                            /* extract ^^ to drawPath(x1, y1, x2, y2) */
+                                            List<Integer> tmpCitylist = new ArrayList<Integer>();
+                                            //System.out.println(selectedLabels.get(0));
+                                            /* Check ob eine Verbindung vorhanden ist */
+                                            if (!conExists(cityId1+1, cityId2+1)) {
+                                                connectionID++;
+                                                tmpCitylist.add(cityId1+1);
+                                                tmpCitylist.add(cityId2+1);
+                                                Connection connection = new Connection(connectionID, distance, 1, tmpCitylist);
+                                                nodes.get(cityId1).trails.add(connection);
+                                                nodes.get(cityId2).trails.add(connection);
+                                                customconnections.add(connection);
+                                                drawSingleLine(x1, y1, x2, y2,customconnections.size() -1);
+
+                                            }
+                                            cityLabel.get(cityId2).setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"))));
+                                            cityLabel.get(cityId1).setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"))));
+                                            //selectedLabels.clear(); /*switch too expressions to change selection behaviour */
+                                            selectedLabels.remove(0);
+                                            //System.out.println(customconnections.toString());
+                                            System.out.println(nodes.toString());
+                                            System.out.println("--------------------------------------------------nodes--------------------------------------------");
+                                        }
+                                        break;
+                                    default :
+                                        System.out.println("switch fails");
+                                        break;
                                 }
 
                             } else if (event.getButton() == MouseButton.SECONDARY && event.getClickCount() == 1
@@ -317,16 +311,16 @@ public class Karte extends Application implements View {
                                         nodePackage.get(1).add(Integer.parseInt(pakete.getText()));
                                         root.setRight(null);
                                         paketAnzeige += ("Node: " + Integer.parseInt((label.getId())) + "Pakete: "
-                                                + Integer.parseInt(pakete.getText()) + "\n");
+                                            + Integer.parseInt(pakete.getText()) + "\n");
                                         ausgabe_area.setText(paketAnzeige);
                                     }
                                 });
 
                                 System.out.println(nodes.toString());
                                 System.out
-                                        .println("--------------------------------------------------nodes--------------------------------------------");
+                                    .println("--------------------------------------------------nodes--------------------------------------------");
 
-                            }
+                                    }
                             lastlabel = label;
                             if (nodes.size() >= 2 && customconnections.size() >= 1) {
                                 Button fineshed = new Button("fertig");
@@ -405,8 +399,8 @@ public class Karte extends Application implements View {
                 scene.getStylesheets().clear();
                 root.setCenter(benutzer_pane);
                 TextArea info = new TextArea("Info: Folgende Eingaben sind möglich \n" + "doppel Klick : erstelle Stadt \n"
-                        + "Klick auf Stadt: Stadt makieren -> dann Auswahl der 2. Stadt um eine Verbindung zu erzeugen \n"
-                        + "rechtsKlick auf Stadt: Paketmenge bestimmen ");
+                    + "Klick auf Stadt: Stadt makieren -> dann Auswahl der 2. Stadt um eine Verbindung zu erzeugen \n"
+                    + "rechtsKlick auf Stadt: Paketmenge bestimmen ");
                 info.setEditable(false);
                 info.setPrefRowCount(4);
                 // info.setStyle("-fx-text-fill:white;");
@@ -493,26 +487,26 @@ public class Karte extends Application implements View {
 
     private Paint getColor(int color) {
         switch (color) {
-        case 1:
-            return Color.DARKGOLDENROD;
-        case 2:
-            return Color.AQUA;
-        case 3:
-            return Color.BISQUE;
-        case 4:
-            return Color.CHOCOLATE;
-        case 5:
-            return Color.CYAN;
-        case 6:
-            return Color.GREEN;
-        case 7:
-            return Color.YELLOW;
-        case 8:
-            return Color.RED;
-        case 9:
-            return Color.ROSYBROWN;
-        case 10:
-            return Color.HOTPINK;
+            case 1:
+                return Color.DARKGOLDENROD;
+            case 2:
+                return Color.AQUA;
+            case 3:
+                return Color.BISQUE;
+            case 4:
+                return Color.CHOCOLATE;
+            case 5:
+                return Color.CYAN;
+            case 6:
+                return Color.GREEN;
+            case 7:
+                return Color.YELLOW;
+            case 8:
+                return Color.RED;
+            case 9:
+                return Color.ROSYBROWN;
+            case 10:
+                return Color.HOTPINK;
         }
         return Color.TOMATO;
     }
