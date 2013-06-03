@@ -19,7 +19,7 @@ public class Simulation {
 
     final public int CITIES; // Anzahl der Staedte
     final public String TESTDATA; // TSP Datei
-    final public static int capacity = 3;
+    public static int capacity;
     final public static int ANTS = 1; // Anzahl der Ameisen
     final public static int STARTNODE = 1; // Startpunkt der Ameise
     final public static double ALPHA = 1; // Einfluss der Pheromonene
@@ -53,10 +53,10 @@ public class Simulation {
         t.get(0).add(6);
         t.get(1).add(2);
         t.get(1).add(2);
-        t.get(1).add(2);
-        t.get(1).add(2);
         t.get(1).add(3);
-
+        t.get(1).add(0);
+        t.get(1).add(3);
+        capacity = 8;
         ACOImpl.ACOImplInit(t);
 
         CITIES = cities;
@@ -83,11 +83,11 @@ public class Simulation {
         BESTROUTE = new LinkedList<List<Integer>>();
         STEPS = 0;
     }
-    public Simulation(int cities, List<Connection> con, List<Node> nod, List<List<Integer>> t) {
+    public Simulation(int cities, List<Connection> con, List<Node> nod, List<List<Integer>> t, int capa) {
 
             
             ACOImpl.ACOImplInit(t);
-            
+            this.capacity = capa;
             TESTDATA = "werd glücklich java";
             CITIES = cities;
             COLONY = new ACOImpl();
@@ -106,11 +106,6 @@ public class Simulation {
         BESTROUTE = new LinkedList<List<Integer>>();
             STEPS = 0;
     }
-    
-        
-        
-        
-        
 
         private Simulation(int cities, String path, List<Connection> cons, List<Ant> antlist, List<Node> nodes, List<List<Integer>> bestRoute, int steps) {
             List<List<Integer>> t = new ArrayList<List<Integer>>();
@@ -127,7 +122,7 @@ public class Simulation {
             t.get(1).add(1);
             t.get(1).add(1);
             t.get(1).add(1);
-
+            capacity = 8;
             ACOImpl.ACOImplInit(t);
 
             CITIES = cities;

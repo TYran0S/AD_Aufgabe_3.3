@@ -17,7 +17,7 @@ public class ACOImpl implements ACO {
             for (int i = 0; i < l.get(0).size(); i++) {
                 if(l.get(1).get(i) != 0){
                     total += l.get(1).get(i);
-                    packages.put(l.get(0).get(i), l.get(1).get(0));
+                    packages.put(l.get(0).get(i), l.get(1).get(i));
                 }
             }
         }
