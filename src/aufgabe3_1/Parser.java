@@ -67,7 +67,11 @@ public class Parser {
             if (array[i] == 0) {
                 
                 currentCity++;
+                if(array[i+1] == -1){
+                	packetList.add(0);
+                } else {
                 packetList.add(array[i+1]);
+                }
                 neighborCity = array[i+2];
                 List<Integer> cities = new ArrayList<Integer>();
                 cities.add(currentCity);
@@ -86,6 +90,7 @@ public class Parser {
                 i = i+1;
             } // else
         } // for        
+     
         return connectionList;
     }
 
