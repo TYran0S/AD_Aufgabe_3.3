@@ -74,7 +74,7 @@ public class Karte extends Application implements View {
     final public static int BEST10 = 15;
     final public static int BEST20 = 4205;
 
-    final int DEFAULT_CYCLES = 1000;
+    final int DEFAULT_CYCLES = 10000;
 
     Image city_image = new Image(getClass().getResourceAsStream("/resource/haus_symbol_small.jpg"));
     Image sel_city_image = new Image(getClass().getResourceAsStream("/resource/haus_symbol_small_blue.png"));
@@ -136,7 +136,7 @@ public class Karte extends Application implements View {
 
         ausgabe_area = new TextArea("Beste Route");
         ausgabe_area.setEditable(false);
-        ausgabe_area.setPrefRowCount(4);
+        ausgabe_area.setPrefRowCount(8);
         ausgabe_area.setMinHeight(20);
         root.setBottom(bottom);
         bottom.setLeft(ausgabe_area);
@@ -277,7 +277,7 @@ public class Karte extends Application implements View {
         for (Path path : pathArrList) {
             pathlist[pathArrList.indexOf(path)] = path;
         }
-        con.doSteps(1000);
+        con.doSteps(DEFAULT_CYCLES);
 
     }
 
@@ -313,6 +313,7 @@ public class Karte extends Application implements View {
                 }
             }
         }
+        int gesamtLaenge = 0;
         // Ausgabe des Path als String
         for (int i = 0; i < path.size(); i++) {
             if (path.get(i).size() > 1) {
@@ -321,12 +322,13 @@ public class Karte extends Application implements View {
                 }
 
                 ausgabe = ausgabe + "\nLaenge: " + new ACOImpl().length(path.get(i), c) + "m\n";
+                gesamtLaenge += new ACOImpl().length(path.get(i), c);
             }
         }
         ausgabe += Ant.output;
         bottom.setLeft(null);
         bottom.setCenter(ausgabe_area);
-        ausgabe_area.setText(paketAnzeige + ausgabe);
+        ausgabe_area.setText(paketAnzeige + ausgabe + "\nGesamt Laenge: " + gesamtLaenge );
         bottom.setRight(null);
         return false;
     }
