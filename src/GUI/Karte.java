@@ -28,7 +28,7 @@ public class Karte extends Application implements View {
     BorderPane root;
     BorderPane startscr;
     GridPane button_pane;
-    GridPane bottom;
+    BorderPane bottom;
     GridPane bottomRigth;
     Pane karten_pane;
     Pane benutzer_pane;
@@ -95,7 +95,7 @@ public class Karte extends Application implements View {
         button_pane = new GridPane();
         karten_pane = new Pane();
         benutzer_pane = new Pane();
-        bottom = new GridPane();
+        bottom = new BorderPane();
         bottomRigth = new GridPane();
         // scrpane = new ScrollPane();
         root.setCenter(button_pane);
@@ -151,7 +151,7 @@ public class Karte extends Application implements View {
         ausgabe_area.setPrefRowCount(4);
         ausgabe_area.setMinHeight(20);
         root.setBottom(bottom);
-        bottom.add(ausgabe_area, 1, 1);
+        bottom.setLeft(ausgabe_area);
         // ausgabe_text_feld = new TextField("Beste Route");
         // ausgabe_text_feld.setEditable(false);
         // root.setBottom(ausgabe_text_feld);
@@ -182,7 +182,7 @@ public class Karte extends Application implements View {
     }
 
     private void getCoordinatesPerClick() {
-        bottom.add(bottomRigth, 2, 1);
+        bottom.setRight(bottomRigth);
         pathlist = new Path[30];
         // liste Nodes
         nodePackage.add(new ArrayList<Integer>());
@@ -278,7 +278,7 @@ public class Karte extends Application implements View {
                 ausgabe_area.setPrefRowCount(6);
                 ausgabe_area.setMinHeight(20);
                 root.setBottom(bottom);
-                bottom.add(ausgabe_area, 1, 1);
+                bottom.setLeft(ausgabe_area);
                 getCoordinatesPerClick();
 
             };
@@ -349,10 +349,10 @@ public class Karte extends Application implements View {
             }
         }
         ausgabe += Ant.output;
-
+        bottom.setLeft(null);
+        bottom.setCenter(ausgabe_area);
         ausgabe_area.setText(paketAnzeige + ausgabe);
-        bottomRigth.setVisible(false);
-
+        bottom.setRight(null);
         return false;
     }
 
@@ -509,7 +509,6 @@ public class Karte extends Application implements View {
 
     public void removeConnection(int index) {
     }
-
     public void removeCity() {
 
     }
@@ -550,12 +549,12 @@ public class Karte extends Application implements View {
                         public void handle(ActionEvent event) {
                             capa = Integer.parseInt(capaCity.getText());
                             if(capa != 0)
-                    {
-                        scene.getStylesheets().clear();
-                        startUserCity(customconnections, nodes);
-                    }
-
+                            {
+                            	scene.getStylesheets().clear();
+                            	startUserCity(customconnections, nodes);
+                            }
                     };
+                    
                     });
                 }
                 Label capaText = new Label("Max Kapazität:");
@@ -608,10 +607,10 @@ public class Karte extends Application implements View {
                         connectionID++;
                         tmpCitylist.add(cityId1+1);
                         tmpCitylist.add(cityId2+1);
-                        Connection connection = new Connection(connectionID, distance, 1, tmpCitylist);
+                        Connection connection = new Connection(connectionID, distance, 1, tmpCitylist);//TODO:
                         nodes.get(cityId1).trails.add(connection);
                         nodes.get(cityId2).trails.add(connection);
-                        connection = new Connection(connectionID, distance, 1, tmpCitylist);
+                        connection = new Connection(connectionID, distance, 0, tmpCitylist);
                         customconnections.add(connection);
                         drawSingleLine(x1, y1, x2, y2,customconnections.size() -1);
 
@@ -656,7 +655,7 @@ public class Karte extends Application implements View {
                 } catch (NumberFormatException e) {
                     pakete.setText("Int-Werte > 0 eingeben");
                 }
-                nodePackage.get(0).add(Integer.parseInt((label.getId()))+1);
+                nodePackage.get(0).add(Integer.parseInt((label.getId()))+1); //TODO:
                 nodePackage.get(1).add(Integer.parseInt(pakete.getText()));
                 root.setRight(null);
 
