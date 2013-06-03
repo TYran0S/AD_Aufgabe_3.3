@@ -245,6 +245,8 @@ public class Simulation {
     List<Integer> optimizePath(List<Integer> temp, List<Connection> connections){
         List<Integer> path = temp.subList(0, temp.size());
         Ant ant = new Ant(ACOImpl.packages, ACOImpl.total);
+		//Ueberprueft 3 aufeinander folgende eintraege in die Liste wenn der Erste gleich dem Dritten ist und am Zweiten weder beladen noch endladen wurde
+		//wird der Zweite und der Dritte Eintrag aus der Liste entfernt
         for(int i = 0; i + 2 < path.size(); i++){
             if(!(ant.load(path.get(i + 1)) || ant.unload(path.get(i + 1))) && 
                     path.get(i) == path.get(i + 2)){
@@ -254,6 +256,7 @@ public class Simulation {
                     }
         }
 
+		//Bereinigung von vielleicht durch die Optimierung auftretende Einträge des gleichen Nodes in der Liste
         for(int i = 0; i + 1 < path.size(); i++){
             if(path.get(i) == path.get(i + 1)){
                 path.remove(i + 1);
@@ -266,6 +269,11 @@ public class Simulation {
         int unload2 = 0;
         List<Integer> l = new ArrayList<Integer>();
         l.add(path.get(0));
+		
+		
+		//geht die Teilrouten durch und speichert das erste und letzte Mal entladen
+		//Wenn die Länge der Route zwischen Start und letzten Entladen kleiner ist als der Rest der Route wird der Rest durch den Weg zwischen Start und letzten Entladen in umgekehrter Reihen folge ersetzt
+		//Gleiches gilt fue zwischen Start und ersten Entladen und erstes Entladen Ende, dabei ersetzt gegebenenfalls die Route erstes Entladen Ende, die Route Start erstes Entladen
         for(int i = 1; i < path.size(); i++){
             if(ant.unload(path.get(i))){
                 if(unload1 == 0){
@@ -301,6 +309,8 @@ public class Simulation {
             }
         }
         path = l;
+		
+		//Bereinigung von vielleicht durch die Optimierung auftretende Einträge des gleichen Nodes in der Liste
         for(int i = 0; i + 1 < path.size(); i++){
             if(path.get(i) == path.get(i + 1)){
                 path.remove(i + 1);
