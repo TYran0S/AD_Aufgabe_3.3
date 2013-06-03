@@ -8,7 +8,7 @@ public class Parser {
     // Startwert der Pheromone pro Connection
     final public static int pheromon = 0;
     //Liste für die Anzahl der Pakete pro Stadt
-    public static List<Integer> packetList = new ArrayList<Integer>();
+    public static ArrayList<Integer> packetList = new ArrayList<Integer>();
 
     /**
      * Liest eine (symmetrische) TSP Datei ein und uebertraegt die linke
@@ -45,7 +45,8 @@ public class Parser {
             System.err.println("csv Datei konnte nicht eingelesen werden!");
             System.exit(0);
         } // catch
-        
+        Simulation.capacity = resultArray[0];
+//        System.out.println(Simulation.capacity);
         return resultArray;
     }
 
@@ -57,12 +58,12 @@ public class Parser {
      */
     public static List<Connection> initConnections(int[] array) {
 
-        List<Connection> connectionList = new ArrayList<Connection>();
+        ArrayList<Connection> connectionList = new ArrayList<Connection>();
         int currentCity = 1;
         int neighborCity = 0;
         int connectionID = 1;
 
-        for (int i = 0; i < array.length-1; i++) {
+        for (int i = 1; i < array.length-1; i++) {
             
             if (array[i] == 0) {
                 
@@ -90,7 +91,13 @@ public class Parser {
                 i = i+1;
             } // else
         } // for        
-     
+        //Checken ob Kapazität und Bestellungen harmonieren(Kapazität muss >= Max Anzahl Paket für kunde sein)
+        ArrayList<Integer> sortlist = (ArrayList<Integer>) packetList.clone();
+        Collections.sort(sortlist);
+        if(Simulation.capacity < sortlist.get(sortlist.size()-1)){
+        	System.err.println("Kapazität kleiner als Max Anzahl Pakete für Kunden");
+        	System.exit(0);
+        }
         return connectionList;
     }
 

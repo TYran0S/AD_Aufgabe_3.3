@@ -3,9 +3,10 @@ Syntax der CSV:
 
 die StartStadt(Node) ist immer schon vorhanden,wird also nicht notiert.
 
-0; -> steht für eine neue Stadt(Node)
-0;2 -> die erste Zahl nach der 0 gibt die Anzahl der pakete für diese Stadt an,für 0 Pakete muss eine -1 eingetragen werden
-0;2;3;222 -> die nächsten beiden Zahlen beschreiben eine neue Connection der aktuellen Stadt,hierbei steht die 3 für die Zielstadt des "Weges"(Connection),und
+100;0 -> die erste Zahl in der CSV gibt die Kapazität an!
+100;0 -> steht für eine neue Stadt(Node)
+100;0;2 -> die erste Zahl nach der 0 gibt die Anzahl der pakete für diese Stadt an,für 0 Pakete muss eine -1 eingetragen werden
+100;0;2;3;222 -> die nächsten beiden Zahlen beschreiben eine neue Connection der aktuellen Stadt,hierbei steht die 3 für die Zielstadt des "Weges"(Connection),und
              die 222 für die Entfernung.Nun kann entweder eine neue Stadt anfangen z.B. 0;2;3;222;0 mit einer neuen ;0 oder eine weitere Connection für die aktuelle
              Stadt z.B 0;2;3;222;4;333.
              
