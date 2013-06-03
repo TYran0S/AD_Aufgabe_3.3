@@ -503,6 +503,8 @@ public class Karte extends Application implements View {
                 ausgabe = ausgabe + "\nLaenge: " + new ACOImpl().length(path.get(i), c) + "m\n";
             }
         }
+        ausgabe += Ant.output;
+        
         ausgabe_area.setText(paketAnzeige + ausgabe);
 
         return false;
