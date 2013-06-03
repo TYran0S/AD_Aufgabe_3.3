@@ -43,24 +43,13 @@ public class Simulation {
     final public int STEPS;
 
     public Simulation(int cities, String path) {
-        List<List<Integer>> t = new ArrayList<List<Integer>>();
-        t.add(new ArrayList<Integer>());
-        t.add(new ArrayList<Integer>());
-        t.get(0).add(5);
-        t.get(0).add(2);
-        t.get(0).add(3);
-        t.get(0).add(4);
-        t.get(0).add(6);
-        t.get(1).add(2);
-        t.get(1).add(2);
-        t.get(1).add(3);
-        t.get(1).add(0);
-        t.get(1).add(3);
-        capacity = 8;
-        ACOImpl.ACOImplInit(t);
+    	TESTDATA = path;
+    	List<List<Integer>> packageMap = new ArrayList<List<Integer>>();
+    	packageMap = Parser.initPackages(Parser.parseTestFile(TESTDATA));
+        ACOImpl.ACOImplInit(packageMap);
 
         CITIES = cities;
-        TESTDATA = path;
+        
         COLONY = new ACOImpl();
         List<Connection> connections = Parser.initConnections(Parser.parseTestFile(TESTDATA));// Connections
         // parsen
