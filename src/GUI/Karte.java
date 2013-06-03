@@ -28,6 +28,8 @@ public class Karte extends Application implements View {
     BorderPane root;
     BorderPane startscr;
     GridPane button_pane;
+    GridPane bottom;
+    GridPane bottomRigth;
     Pane karten_pane;
     Pane benutzer_pane;
     // ScrollPane scrpane;
@@ -35,6 +37,7 @@ public class Karte extends Application implements View {
     TextField eingabe_text_feld;
     TextField ausgabe_text_feld;
     TextField pakete;
+    TextField capaCity;
     Scene scene;
     Stage primaryStage;
     List<Integer> xCord;
@@ -59,6 +62,7 @@ public class Karte extends Application implements View {
     String paketAnzeige = "";
     List<List<Integer>> nodePackage = new ArrayList<List<Integer>>();
     int connectionID = 0;
+    int capa = 0;
 
 
     int x1 = 0;
@@ -90,6 +94,8 @@ public class Karte extends Application implements View {
         button_pane = new GridPane();
         karten_pane = new Pane();
         benutzer_pane = new Pane();
+        bottom = new GridPane();
+        bottomRigth = new GridPane();
         // scrpane = new ScrollPane();
         root.setCenter(button_pane);
         // root.setCenter(scrpane);
@@ -142,7 +148,8 @@ public class Karte extends Application implements View {
         ausgabe_area = new TextArea("Beste Route");
         ausgabe_area.setEditable(false);
         ausgabe_area.setPrefRowCount(4);
-        root.setBottom(ausgabe_area);
+        root.setBottom(bottom);
+        bottom.add(ausgabe_area, 1, 1);
         // ausgabe_text_feld = new TextField("Beste Route");
         // ausgabe_text_feld.setMinHeight(10);
         // ausgabe_text_feld.setEditable(false);
@@ -174,7 +181,7 @@ public class Karte extends Application implements View {
     }
 
     private void getCoordinatesPerClick() {
-
+    	bottom.add(bottomRigth, 2, 1);
         pathlist = new Path[30];
         // liste Nodes
         nodePackage.add(new ArrayList<Integer>());
@@ -283,7 +290,8 @@ public class Karte extends Application implements View {
                                 }
 
                             } else if (event.getButton() == MouseButton.SECONDARY && event.getClickCount() == 1
-                                    && Integer.parseInt(((Label) event.getSource()).getId()) != 0) {
+                                       && Integer.parseInt(((Label) event.getSource()).getId()) != 0 
+                                       && nodes.get(Integer.parseInt((label.getId()))).amountOfPackets == 0) {
                                 final GridPane testPane = new GridPane();
                                 pakete = new TextField("0");
                                 Label text_info1 = new Label("Paketanzahl:");
@@ -302,17 +310,19 @@ public class Karte extends Application implements View {
                                 eingabe_anzahl.setOnAction(new EventHandler<ActionEvent>() {
                                     @Override
                                     public void handle(ActionEvent event) {
-                                        try {
-                                            nodes.get(Integer.parseInt((label.getId()))).setAmountOfPackets(Integer.parseInt(pakete.getText()));
-                                        } catch (NumberFormatException e) {
-                                            pakete.setText("Int-Werte > 0 eingeben");
-                                        }
-                                        nodePackage.get(0).add(Integer.parseInt((label.getId())));
-                                        nodePackage.get(1).add(Integer.parseInt(pakete.getText()));
-                                        root.setRight(null);
-                                        paketAnzeige += ("Node: " + Integer.parseInt((label.getId())) + "Pakete: "
-                                            + Integer.parseInt(pakete.getText()) + "\n");
-                                        ausgabe_area.setText(paketAnzeige);
+
+                                    		try {
+                                    			nodes.get(Integer.parseInt((label.getId()))).setAmountOfPackets(Integer.parseInt(pakete.getText()));
+                                    		} catch (NumberFormatException e) {
+                                    			pakete.setText("Int-Werte > 0 eingeben");
+                                    		}
+                                    		nodePackage.get(0).add(Integer.parseInt((label.getId())));
+                                    		nodePackage.get(1).add(Integer.parseInt(pakete.getText()));
+                                    		root.setRight(null);
+                                        
+                                    		paketAnzeige += ("Node: " + (Integer.parseInt((label.getId()))+1) + "Pakete: "
+                                    				+ Integer.parseInt(pakete.getText()) + "\n");
+                                    		ausgabe_area.setText(paketAnzeige);
                                     }
                                 });
 
@@ -322,18 +332,30 @@ public class Karte extends Application implements View {
 
                                     }
                             lastlabel = label;
+                            
+                            
+                            
                             if (nodes.size() >= 2 && customconnections.size() >= 1) {
-                                Button fineshed = new Button("fertig");
-                                root.setLeft(fineshed);
+                                final Button fineshed = new Button("Starte Algo");
+                                bottomRigth.add(fineshed, 1, 3);
                                 fineshed.setOnAction(new EventHandler<ActionEvent>() {
                                     @Override
                                     public void handle(ActionEvent event) {
-                                        scene.getStylesheets().clear();
-                                        startUserCity(customconnections, nodes);
+                                    	capa = Integer.parseInt(capaCity.getText());
+                                    	if(capa != 0)
+                                    	{
+                                    		scene.getStylesheets().clear();
+                                    		startUserCity(customconnections, nodes);
+                                    	}
 
                                     };
                                 });
                             }
+                            Label capaText = new Label("Max Kapazität:");
+                            capaCity = new TextField("0");
+                            bottomRigth.add(capaText, 1, 1);
+                            bottomRigth.add(capaCity, 1, 2);
+                            
 
                         }
                     });
@@ -409,8 +431,9 @@ public class Karte extends Application implements View {
                 root.setTop(info);
                 ausgabe_area = new TextArea("Beste Route");
                 ausgabe_area.setEditable(false);
-                ausgabe_area.setPrefRowCount(4);
-                root.setBottom(ausgabe_area);
+                ausgabe_area.setPrefRowCount(6);
+                root.setBottom(bottom);
+                bottom.add(ausgabe_area, 1, 1);
                 getCoordinatesPerClick();
 
             };
@@ -426,7 +449,7 @@ public class Karte extends Application implements View {
     /* TODO: nur zum finden */
     private void startUserCity(List<Connection> connection, List<Node> nod) {
 
-        this.con = new ControlUnit(this, nod.size(), connection, nod, nodePackage);
+        this.con = new ControlUnit(this, nod.size(), connection, nod, nodePackage, capa);
         System.out.println("Anzahl = " + anzahl);
         System.out.println("Connections = " + connection.size());
         System.out.println("Nodes = " + nod.size());
@@ -480,7 +503,7 @@ public class Karte extends Application implements View {
                 ausgabe = ausgabe + "\nLaenge: " + new ACOImpl().length(path.get(i), c) + "m\n";
             }
         }
-        ausgabe_area.setText(ausgabe);
+        ausgabe_area.setText(paketAnzeige + ausgabe);
 
         return false;
     }
