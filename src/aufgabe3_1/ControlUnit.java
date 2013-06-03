@@ -24,10 +24,10 @@ public class ControlUnit implements Controller {
 	}
 
 
-	public ControlUnit(View gui, int anzahlCities, List<Connection> con, List<Node> nod, List<List<Integer>> nodePackage){
+	public ControlUnit(View gui, int anzahlCities, List<Connection> con, List<Node> nod, List<List<Integer>> nodePackage, int capa){
 		//uebergabe der GUI!
 		VIEW = gui;
-		SimAnt=new Simulation(anzahlCities,con, nod, nodePackage);
+		SimAnt=new Simulation(anzahlCities,con, nod, nodePackage, capa);
 	}
 
 	/* (non-Javadoc)
