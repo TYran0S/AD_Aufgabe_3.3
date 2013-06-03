@@ -36,17 +36,9 @@ public class ControlUnit implements Controller {
 	@Override
 	public int doSteps(int steps) {
 		SimAnt=SimAnt.doSteps(steps);
-		if(!Simulation.bestTours.isEmpty()){
-	                this.VIEW.newPath(Simulation.bestTours, SimAnt.CONNECTIONS);
-		}else if(!SimAnt.BESTROUTE.isEmpty()){
+		
+	    this.VIEW.newPath(Simulation.bestTours, SimAnt.CONNECTIONS);
 
-			/*
-			 * Die Eins muss dann hochgezählt werden für verschiedene Colors
-			 * 
-			 * */
-
-			//VIEW.newPath(SimAnt.BESTROUTE.get(0), new ACOImpl().length(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS), new ACOImpl().visitedStreets(this.SimAnt.BESTROUTE.get(0), SimAnt.CONNECTIONS ),1);
-		}
 		return this.SimAnt.STEPS;
 	}
 

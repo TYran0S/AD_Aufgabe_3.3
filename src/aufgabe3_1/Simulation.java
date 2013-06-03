@@ -19,8 +19,8 @@ public class Simulation {
 
     final public int CITIES; // Anzahl der Staedte
     final public String TESTDATA; // TSP Datei
-    final public static int capacity = 2;
-    final public static int ANTS = 50; // Anzahl der Ameisen
+    final public static int capacity = 3;
+    final public static int ANTS = 1; // Anzahl der Ameisen
     final public static int STARTNODE = 1; // Startpunkt der Ameise
     final public static double ALPHA = 1; // Einfluss der Pheromonene
     final public static double BETA = 5.0; // Einfluss der Weglaenge
@@ -51,11 +51,11 @@ public class Simulation {
         t.get(0).add(3);
         t.get(0).add(4);
         t.get(0).add(6);
-        t.get(1).add(1);
-        t.get(1).add(1);
-        t.get(1).add(1);
-        t.get(1).add(1);
-        t.get(1).add(1);
+        t.get(1).add(2);
+        t.get(1).add(2);
+        t.get(1).add(2);
+        t.get(1).add(2);
+        t.get(1).add(3);
 
         ACOImpl.ACOImplInit(t);
 
@@ -116,6 +116,7 @@ public class Simulation {
             List<List<Integer>> t = new ArrayList<List<Integer>>();
             t.add(new ArrayList<Integer>());
             t.add(new ArrayList<Integer>());
+            System.out.printf("init\n");
             t.get(0).add(5);
             t.get(0).add(2);
             t.get(0).add(3);
@@ -206,6 +207,7 @@ public class Simulation {
 
                 // bist du fertig ?
                 if (COLONY.tourFinished(ant, nextNode.ID)) {
+                    System.out.printf("Ant %d finish tour\n",ant.ID);
                     List<Integer> temp = ant.visitedNodes;
                     temp = optimizePath(ant.visitedNodes, connections);
                     int tempLength = COLONY.length(temp, connections); // Laenge berechnen
@@ -233,7 +235,9 @@ public class Simulation {
             // Nodes mit aktualisierten Connections erzeugen
             //TODO nodes = Parser.initNodes(connections);
         }
-		bestTours = calculateTours(bestRoute.getFirst());
+        //if(bestTours != null && !bestTours.isEmpty()){
+            bestTours = calculateTours(bestRoute.getFirst());
+        //}
         return new Simulation(CITIES, TESTDATA, connections, antList, nodes, bestRoute, this.STEPS + steps);
     } // methode
 
@@ -311,12 +315,13 @@ public class Simulation {
         return path;
     }
 	
-	    /**
+	/**
      * berrechnet die einzelnen Touren einer Ameise
      * @param path
      * @return
      */
     ArrayList<List<Integer>> calculateTours(List<Integer> path) {
+        System.out.printf("calculateTours\n");
         ArrayList<List<Integer>> tours = new ArrayList<List<Integer>>();
         Ant ant = new Ant(ACOImpl.packages, ACOImpl.total);
         int j = 0;
@@ -327,6 +332,7 @@ public class Simulation {
                 j = i;
             }
         }
+        System.out.printf("Finish calulating\n");
         return tours;
     }
 }
