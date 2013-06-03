@@ -41,7 +41,7 @@ public class Ant {
             
             if(tourFin)
             {
-            	output += String.format("LKW %d unload %d packages at %d , %d/%d/%d\n", lkwID, packagesToDeliver.get(id), id, deliverdPackagesInARound, capacity, deliverdPackagesInARound + deliverdPackagesTotal);
+                output += String.format("LKW %d entlädt %d Paket/e bei Kunde %d\n", lkwID, packagesToDeliver.get(id), id);
             }
         	System.out.printf("Ant %d unload %d packages at %d , %d/%d/%d\n", ID, packagesToDeliver.get(id), id, deliverdPackagesInARound, capacity, deliverdPackagesInARound + deliverdPackagesTotal);
             deliverdPackagesInARound += packagesToDeliver.get(id);
