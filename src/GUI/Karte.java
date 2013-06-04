@@ -37,6 +37,7 @@ public class Karte extends Application implements View {
     TextField ausgabe_text_feld;
     TextField pakete;
     TextField capaCity;
+    ScrollPane scrp;
     Scene scene;
     Stage primaryStage;
     List<Integer> xCord;
@@ -95,18 +96,22 @@ public class Karte extends Application implements View {
         benutzer_pane = new Pane();
         bottom = new BorderPane();
         bottomRigth = new GridPane();
-        root.setCenter(button_pane);
+        
+        scrp = new ScrollPane();
+        scrp.setContent(button_pane);
+        root.setCenter(scrp);
         makeChoiceButtons();
 
         scene = new Scene(root, 1024, 800);
         primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
+        //primaryStage.setResizable(false);
         primaryStage.show();
     }
 
     // Buttons und Text fï¿½r die Bedienung
     private void makeButtons() {
-        root.setCenter(karten_pane);
+    	scrp.setContent(karten_pane);
+        //root.setCenter();
         button_pane = new GridPane();
         primaryStage.setResizable(true);
         root.setTop(button_pane);
@@ -209,16 +214,16 @@ public class Karte extends Application implements View {
             };
         });
 
-        Button button_10 = new Button("Pentagram");
+        Button button_10 = new Button("Tafel");
         button_10.setPrefSize(1024, 200);
-        button_10.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/Pentagram.png"))));
+        //button_10.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/resource/Pentagram.png"))));
         button_10.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 scene.getStylesheets().clear();
                 makeButtons();
-                // letsGO(10, "GR10v2.csv");
-                letsGO(10, "GRpenta.csv");
+                letsGO(30, "testcsv.csv");
+                //letsGO(10, "GRpenta.csv");
             };
         });
 
@@ -240,6 +245,8 @@ public class Karte extends Application implements View {
             @Override
             public void handle(ActionEvent event) {
                 scene.getStylesheets().clear();
+              
+                //scrp.setContent(benutzer_pane);
                 root.setCenter(benutzer_pane);
                 TextArea info = new TextArea("Info: Folgende Eingaben sind möglich \n" + "doppel Klick : erstelle Stadt \n"
                     + "Klick auf Stadt: Stadt makieren -> dann Auswahl der 2. Stadt um eine Verbindung zu erzeugen \n"
@@ -286,7 +293,7 @@ public class Karte extends Application implements View {
         this.con = new ControlUnit(this, anzahl, datei);
         cities = con.giveNodelist(true);
         connections = con.giveConnections(true);
-        // Array mit "Strich" Elementen
+         //Array mit "Strich" Elementen
         pathlist = new Path[con.giveConnections(true).size()];
         drawCities();
     }
@@ -328,6 +335,7 @@ public class Karte extends Application implements View {
         ausgabe += Ant.output;
         bottom.setLeft(null);
         bottom.setCenter(ausgabe_area);
+        ausgabe_area.setPrefRowCount(8);
         ausgabe_area.setText(paketAnzeige + ausgabe + "\nGesamt Laenge: " + gesamtLaenge );
         bottom.setRight(null);
         return false;
@@ -367,9 +375,9 @@ public class Karte extends Application implements View {
             draw6();
             ausgabe = true;
         }
-        if (cities.size() == 10) {
-            // draw10();
-            drawpenta();
+        if (cities.size() == 30) {
+             draw10();
+            //drawpenta();
             ausgabe = true;
         }
         if (cities.size() == 20) {
@@ -396,8 +404,8 @@ public class Karte extends Application implements View {
 
         // City-Symbole auf der Karte anzeigen
         Label[] city_label = new Label[cities.size()];
-        int[] x_koordinaten = { 103, 333, 119, 518, 486, 730, 783, 934, 1128, 1143 };
-        int[] y_koordinaten = { 103, 103, 384, 103, 382, 305, 100, 500, 92, 492 };
+        int[] x_koordinaten = { 0, 0,   0,   0,   0,   100, 100,   100,   100,   100, 200, 200, 200, 200, 200, 300, 300, 300, 300, 300, 400, 400, 400, 400, 400, 500, 500, 500, 500, 500 };
+        int[] y_koordinaten = { 0, 100, 200, 300, 400, 0, 100, 200, 300, 400,0, 100, 200, 300, 400, 0, 100, 200, 300, 400,0, 100, 200, 300, 400, 0, 100, 200, 300, 400};
 
         drawLines(city_label, x_koordinaten, y_koordinaten);
     }
