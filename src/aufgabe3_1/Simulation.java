@@ -163,7 +163,12 @@ public class Simulation {
                 // Nach Zufallsmuster anhand der Probabilities den naechsten
                 // Node ermitteln
                 Node nextNode = COLONY.randomPathChoice(ant, nodes, probabilities, startNode);
-
+                int counter = 0;
+                while(nextNode.ID == ant.lastNode && ++counter <= 5){
+                    nextNode = COLONY.randomPathChoice(ant, nodes, probabilities, startNode);
+                }
+                counter = 0;
+                ant.lastNode = startNode.ID;
                 // Ameise zum nextNode bewegen, dabei wird mit dem nextNode in
                 // ihrer visitedNodes Liste erzeugt
                 ant.move(nextNode);
