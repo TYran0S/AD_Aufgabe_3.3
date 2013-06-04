@@ -19,7 +19,8 @@ public class Ant {
     public boolean tourFin = false;
     public int lkwID = 1;
 	    public int loadCount = 0;
-	    public static String output = ""; 
+	    public static String output = "";
+    public int lastNode = -1;
     
     @SuppressWarnings("unchecked")
     public Ant(HashMap<Integer,Integer> h, int t) {
@@ -47,6 +48,7 @@ public class Ant {
             deliverdPackagesInARound += packagesToDeliver.get(id);
             packagesToDeliver.remove(id);
 
+            lastNode = -1;
             return true;
         }
         return false;
@@ -68,6 +70,7 @@ public class Ant {
             deliverdPackagesInARound = 0;
             loadCount++;
             System.out.printf("Ant %d load %d packages\n",ID ,deliverdPackagesInARound);
+            lastNode = -1;
             return true;
         }else if(pos == start && deliverdPackagesInARound > 0 && !packagesToDeliver.isEmpty()){
             Integer[] g =  packagesToDeliver.values().toArray(new Integer[1]);
@@ -80,6 +83,7 @@ public class Ant {
             deliverdPackagesInARound = 0;
             loadCount++;
             System.out.printf("Ant %d load %d packages\n",ID , deliverdPackagesInARound);
+            lastNode = -1;
             return true;
         }
         return false;
